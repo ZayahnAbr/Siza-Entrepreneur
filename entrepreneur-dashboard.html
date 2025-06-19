@@ -18,7 +18,7 @@
           <li><a href="resources.html">Resources</a></li>
           <li><a href="events.html">Events</a></li>
           <li><a href="forum.html">Forum</a></li>
-          <li><a href="#">Logout</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
         </ul>
       </nav>
     </div>
@@ -26,11 +26,10 @@
 
   <section class="dashboard-section">
     <div class="container">
-      <h2>Welcome back, Sindiso 👋</h2>
+      <h2>Welcome back, <span id="username">User</span> 👋</h2>
       <p>Here’s a quick overview of your activity:</p>
 
       <div class="card-grid">
-
         <div class="idea-card">
           <h3>Your Active Pitch</h3>
           <p><strong>Project:</strong> SolarBloom</p>
@@ -50,50 +49,45 @@
           <p>📅 6 June, 4PM with Investor Alex</p>
           <a href="https://teams.microsoft.com/meeting-link" target="_blank" class="btn">Join Call</a>
         </div>
-
-        <div class="idea-card">
-          <h3>Submit New Pitch</h3>
-          <p>Have a new idea? Submit a fresh pitch to investors.</p>
-          <a href="#" class="btn">Start Pitch</a>
-        </div>
-
-        <section class="dashboard-section">
-  <div class="container">
-    <!-- existing dashboard cards go here first -->
-
-    <h2>Community Feed</h2>
-   <form class="post-form" onsubmit="addPost(event)">
-  <label for="new-post">Share something with the community</label>
-  <textarea id="new-post" rows="4" placeholder="What's on your mind?" required></textarea>
-
-  <div class="post-form-bottom">
-    <input type="file" id="post-image" accept="image/*" onchange="previewImage(event)">
-    <label for="post-image" class="image-upload-label">📷 Add Image</label>
-
-    <div class="post-preview-img">
-      <img id="image-preview" src="" alt="" style="display:none;" />
-    </div>
-
-    <button type="submit" class="btn">Post</button>
-  </div>
-</form>
-
-
-    <div id="post-feed" class="forum-thread">
-      <!-- Sample static post -->
-      <div class="idea-card post">
-        <strong>Fatima 🇿🇦</strong>
-        <p>Just uploaded my pitch! Nervous but hopeful. Good luck to all of us 💫</p>
-        <div class="post-actions">
-          <button onclick="likePost(this)">❤️ Like</button>
-          <button onclick="replyToPost(this)">💬 Reply</button>
-        </div>
       </div>
-    </div>
-  </div>
-</section>
 
+      <!-- ✅ PITCH FORM -->
+      <div class="idea-card">
+        <h3>Submit a New Pitch</h3>
+        <form id="pitchForm">
+          <input type="text" id="pitchTitle" placeholder="Business Name" required /><br/>
+          <textarea id="pitchDescription" placeholder="Describe your idea..." required></textarea><br/>
+          <button type="submit" class="btn">Submit Pitch</button>
+        </form>
+      </div>
 
+      <!-- ✅ COMMUNITY FEED -->
+      <h2>Community Feed</h2>
+      <form class="post-form" onsubmit="addPost(event)">
+        <label for="new-post">Share something with the community</label>
+        <textarea id="new-post" rows="4" placeholder="What's on your mind?" required></textarea>
+
+        <div class="post-form-bottom">
+          <input type="file" id="post-image" accept="image/*" onchange="previewImage(event)">
+          <label for="post-image" class="image-upload-label">📷 Add Image</label>
+
+          <div class="post-preview-img">
+            <img id="image-preview" src="" alt="" style="display:none;" />
+          </div>
+
+          <button type="submit" class="btn">Post</button>
+        </div>
+      </form>
+
+      <div id="post-feed" class="forum-thread">
+        <div class="idea-card post">
+          <strong>Fatima 🇿🇦</strong>
+          <p>Just uploaded my pitch! Nervous but hopeful. Good luck to all of us 💫</p>
+          <div class="post-actions">
+            <button onclick="likePost(this)">❤️ Like</button>
+            <button onclick="replyToPost(this)">💬 Reply</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -104,11 +98,8 @@
     </div>
   </footer>
 
-    <!-- chat popup html -->
-  <div class="chat-toggle" onclick="toggleChat()">
-    💬 Messages
-  </div>
-
+  <!-- ✅ CHAT POPUP -->
+  <div class="chat-toggle" onclick="toggleChat()">💬 Messages</div>
   <div class="chat-box" id="chatBox">
     <div class="chat-header">
       <span>Messages</span>
@@ -119,7 +110,7 @@
         <strong>Investor Alex:</strong>
         <p>Hi! Let's connect about your pitch.</p>
       </div>
-        <div class="message me">
+      <div class="message me">
         <strong>You:</strong>
         <p>Sounds great! When are you available?</p>
       </div>
@@ -130,28 +121,8 @@
     </form>
   </div>
 
-  <!-- chat script -->
-  <script>
-    function toggleChat() {
-      const chatBox = document.getElementById('chatBox');
-      chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function sendMessage(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const messageText = input.value.trim();
-      if (messageText !== '') {
-        const chatMessages = document.querySelector('.chat-messages');
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message', 'me');
-        newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
-        chatMessages.appendChild(newMessage);
-        input.value = '';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }
-  </script>
-
+  <script src="script.js"></script>
 </body>
 </html>
+
+
