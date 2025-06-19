@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community Forum - Siza Innovator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Siza Innovator</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="messages.html">Messages</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="#">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="form-section">
+    <div class="container">
+      <h2>Community Forum</h2>
+
+      <div class="forum-thread">
+        <div class="idea-card">
+          <h3>How do I improve my pitch deck?</h3>
+          <p><strong>by Fatima</strong> | 4 replies</p>
+          <a href="#" class="btn">View Thread</a>
+        </div>
+
+        <div class="idea-card">
+          <h3>Looking for a co-founder in HealthTech</h3>
+          <p><strong>by Ayanda</strong> | 2 replies</p>
+          <a href="#" class="btn">View Thread</a>
+        </div>
+
+        <div class="idea-card">
+          <h3>Where can I find startup grants in SA?</h3>
+          <p><strong>by Kabelo</strong> | 3 replies</p>
+          <a href="#" class="btn">View Thread</a>
+        </div>
+          <!-- chat popup html -->
+  <div class="chat-toggle" onclick="toggleChat()">
+    💬 Messages
+  </div>
+
+  <div class="chat-box" id="chatBox">
+    <div class="chat-header">
+      <span>Messages</span>
+      <button onclick="toggleChat()">×</button>
+    </div>
+    <div class="chat-messages">
+      <div class="message">
+        <strong>Investor Alex:</strong>
+        <p>Hi! Let's connect about your pitch.</p>
+      </div>
+        <div class="message me">
+        <strong>You:</strong>
+        <p>Sounds great! When are you available?</p>
+      </div>
+    </div>
+    <form class="chat-input" onsubmit="sendMessage(event)">
+      <input type="text" id="chatInput" placeholder="Type a message..." />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <!-- chat script -->
+  <script>
+    function toggleChat() {
+      const chatBox = document.getElementById('chatBox');
+      chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function sendMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const messageText = input.value.trim();
+      if (messageText !== '') {
+        const chatMessages = document.querySelector('.chat-messages');
+        const newMessage = document.createElement('div');
+        newMessage.classList.add('message', 'me');
+        newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
+        chatMessages.appendChild(newMessage);
+        input.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }
+  </script>

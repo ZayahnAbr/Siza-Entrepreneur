@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Siza Innovator - Login / Sign Up</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .auth-container {
+      max-width: 400px;
+      margin: 5rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+
+    .auth-tabs button {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      background: #eee;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .auth-tabs button.active {
+      background: #0077cc;
+      color: white;
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
+      display: block;
+    }
+
+    .auth-form input,
+    .auth-form select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .auth-form button {
+      margin-top: 1.5rem;
+      width: 100%;
+    }
+
+    .role-label {
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <h2 style="text-align: center;">Siza Innovator</h2>
+
+    <div class="auth-tabs">
+      <button class="active" onclick="showTab('login')">Login</button>
+      <button onclick="showTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="login" class="auth-form active" onsubmit="event.preventDefault(); alert('Logging in...')">
+      <input type="email" placeholder="Email" required />
+      <input type="password" placeholder="Password" required />
+      <button type="submit" class="btn">Login</button>
+    </form>
+
+    <!-- Signup Form -->
+    <form id="signup" class="auth-form" onsubmit="event.preventDefault(); alert('Account created!')">
+      <input type="text" placeholder="Full Name" required />
+      <input type="email" placeholder="Email" required />
+      <input type="password" placeholder="Password" required />
+
+      <label class="role-label">Choose Account Type</label>
+      <select required>
+        <option value="">-- Select Role --</option>
+        <option value="entrepreneur">Entrepreneur</option>
+        <option value="investor">Investor</option>
+      </select>
+
+      <button type="submit" class="btn">Sign Up</button>
+    </form>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      document.querySelectorAll('.auth-tabs button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+
+      document.getElementById(tab).classList.add('active');
+      document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

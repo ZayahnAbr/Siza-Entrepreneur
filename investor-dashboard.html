@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Siza Innovator - Investor Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Siza Innovator</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="messages.html">Messages</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="#">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="dashboard-section">
+    <div class="container">
+      <h2>Welcome, Investor Name</h2>
+
+      <div class="filter-bar">
+        <input type="text" placeholder="Search ideas..." />
+        <select>
+          <option>All Industries</option>
+          <option>Energy</option>
+          <option>Tech</option>
+        </select>
+      </div>
+
+      <div class="card-grid">
+        <div class="idea-card">
+          <h3>SolarBloom</h3>
+          <p>Affordable solar batteries for off-grid communities.</p>
+          <a href="#" class="btn">View Pitch</a>
+        </div>
+
+        <div class="idea-card">
+          <h3>MedLink</h3>
+          <p>App connecting remote patients to local clinics.</p>
+          <a href="#" class="btn">View Pitch</a>
+        </div>
+
+        <!-- Add more idea cards here -->
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
+    </div>
+  </footer>
+  <!-- chat popup html -->
+  <div class="chat-toggle" onclick="toggleChat()">
+    💬 Messages
+  </div>
+
+  <div class="chat-box" id="chatBox">
+    <div class="chat-header">
+      <span>Messages</span>
+      <button onclick="toggleChat()">×</button>
+    </div>
+    <div class="chat-messages">
+      <div class="message">
+        <strong>Investor Alex:</strong>
+        <p>Hi! Let's connect about your pitch.</p>
+      </div>
+        <div class="message me">
+        <strong>You:</strong>
+        <p>Sounds great! When are you available?</p>
+      </div>
+    </div>
+    <form class="chat-input" onsubmit="sendMessage(event)">
+      <input type="text" id="chatInput" placeholder="Type a message..." />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <!-- chat script -->
+  <script>
+    function toggleChat() {
+      const chatBox = document.getElementById('chatBox');
+      chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function sendMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const messageText = input.value.trim();
+      if (messageText !== '') {
+        const chatMessages = document.querySelector('.chat-messages');
+        const newMessage = document.createElement('div');
+        newMessage.classList.add('message', 'me');
+        newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
+        chatMessages.appendChild(newMessage);
+        input.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }
+  </script>
+
+</body>
+</html>
+
