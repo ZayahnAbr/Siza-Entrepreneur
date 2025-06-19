@@ -5,6 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Siza Innovator - Investor Dashboard</title>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* Simple modal styling */
+    .modal {
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      max-width: 400px;
+      text-align: center;
+    }
+    .modal-actions {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-around;
+    }
+  </style>
 </head>
 <body>
 
@@ -37,7 +61,7 @@
         </select>
       </div>
 
-      <!-- ✅ pitch cards will be injected here -->
+      <!-- pitch cards container -->
       <div class="card-grid" id="pitchGrid"></div>
     </div>
   </section>
@@ -48,9 +72,9 @@
     </div>
   </footer>
 
-  <!-- 💬 Chat Popup -->
+  <!-- Chat Popup -->
   <div class="chat-toggle" onclick="toggleChat()">💬 Messages</div>
-  <div class="chat-box" id="chatBox">
+  <div class="chat-box" id="chatBox" style="display:none;">
     <div class="chat-header">
       <span>Messages</span>
       <button onclick="toggleChat()">×</button>
@@ -71,7 +95,19 @@
     </form>
   </div>
 
-  <!-- ✅ FIREBASE V9 MODULES -->
+  <!-- NDA Modal -->
+  <div id="ndaModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3>Non-Disclosure Agreement</h3>
+      <p>By proceeding, you agree not to copy, share, or distribute any part of this pitch without explicit permission from the entrepreneur.</p>
+      <p>Do you accept the terms of this NDA?</p>
+      <div class="modal-actions">
+        <button id="acceptNDA" class="btn">I Accept</button>
+        <button id="declineNDA" class="btn secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
@@ -90,15 +126,25 @@
     const db = getFirestore(app);
 
     const pitchGrid = document.getElementById("pitchGrid");
+    const ndaModal = document.getElementById("ndaModal");
+    const acceptBtn = document.getElementById("acceptNDA");
+    const declineBtn = document.getElementById("declineNDA");
 
-    const q = query(collection(db, "testPitches"), orderBy("timestamp", "desc"));
-    const snapshot = await getDocs(q);
+    let selectedPitchId = null; // store clicked pitch id
 
-    if (snapshot.empty) {
-      pitchGrid.innerHTML = "<p>No pitches submitted yet.</p>";
-    } else {
+    async function loadPitches() {
+      const q = query(collection(db, "testPitches"), orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        pitchGrid.innerHTML = "<p>No pitches submitted yet.</p>";
+        return;
+      }
+
       snapshot.forEach(doc => {
         const pitch = doc.data();
+        const pitchId = doc.id;
+
         const card = document.createElement("div");
         card.classList.add("idea-card");
         card.innerHTML = `
@@ -106,15 +152,40 @@
           <p><strong>Description:</strong> ${pitch.description ?? "No description provided."}</p>
           <p><strong>Financial Projections:</strong> ${pitch.financialProjections ?? "N/A"}</p>
           <p><strong>Entrepreneur ID:</strong> ${pitch.entrepreneurID ?? "Unknown"}</p>
-          <a href="#" class="btn">View Pitch</a>
+          <a href="#" class="btn view-pitch-btn" data-pitch-id="${pitchId}">View Pitch</a>
         `;
+
         pitchGrid.appendChild(card);
       });
+
+      // add click event to view pitch buttons
+      document.querySelectorAll(".view-pitch-btn").forEach(btn => {
+        btn.addEventListener("click", e => {
+          e.preventDefault();
+          selectedPitchId = btn.getAttribute("data-pitch-id");
+          ndaModal.style.display = "flex";
+        });
+      });
     }
+
+    // handle NDA modal buttons
+    acceptBtn.addEventListener("click", () => {
+      ndaModal.style.display = "none";
+      // redirect to pitch details page, or show modal with pitch details
+      // example redirect with pitchId as param:
+      window.location.href = `pitch-details.html?id=${selectedPitchId}`;
+    });
+
+    declineBtn.addEventListener("click", () => {
+      ndaModal.style.display = "none";
+      selectedPitchId = null;
+    });
+
+    document.addEventListener("DOMContentLoaded", loadPitches);
   </script>
 
   <script>
-    // ✅ Chat + logout logic
+    // Chat and logout functions
     function toggleChat() {
       const chatBox = document.getElementById('chatBox');
       chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
