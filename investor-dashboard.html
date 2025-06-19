@@ -18,7 +18,7 @@
           <li><a href="resources.html">Resources</a></li>
           <li><a href="events.html">Events</a></li>
           <li><a href="forum.html">Forum</a></li>
-          <li><a href="#">Logout</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
         </ul>
       </nav>
     </div>
@@ -26,7 +26,7 @@
 
   <section class="dashboard-section">
     <div class="container">
-      <h2>Welcome, Investor Name</h2>
+      <h2>Welcome, Investor</h2>
 
       <div class="filter-bar">
         <input type="text" placeholder="Search ideas..." />
@@ -37,20 +37,9 @@
         </select>
       </div>
 
-      <div class="card-grid">
-        <div class="idea-card">
-          <h3>SolarBloom</h3>
-          <p>Affordable solar batteries for off-grid communities.</p>
-          <a href="#" class="btn">View Pitch</a>
-        </div>
-
-        <div class="idea-card">
-          <h3>MedLink</h3>
-          <p>App connecting remote patients to local clinics.</p>
-          <a href="#" class="btn">View Pitch</a>
-        </div>
-
-        <!-- Add more idea cards here -->
+      <!-- ✅ pitch cards will be injected here -->
+      <div class="card-grid" id="pitchGrid">
+        <!-- JavaScript will load pitch cards here -->
       </div>
     </div>
   </section>
@@ -60,6 +49,7 @@
       <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
     </div>
   </footer>
+
   <!-- chat popup html -->
   <div class="chat-toggle" onclick="toggleChat()">
     💬 Messages
@@ -75,7 +65,7 @@
         <strong>Investor Alex:</strong>
         <p>Hi! Let's connect about your pitch.</p>
       </div>
-        <div class="message me">
+      <div class="message me">
         <strong>You:</strong>
         <p>Sounds great! When are you available?</p>
       </div>
@@ -86,8 +76,31 @@
     </form>
   </div>
 
-  <!-- chat script -->
+  <!-- ✅ pitch + chat script -->
   <script>
+    // Show submitted pitches from localStorage
+    const pitchGrid = document.getElementById("pitchGrid");
+    const pitches = JSON.parse(localStorage.getItem("sizaPitches")) || [];
+
+    if (pitchGrid) {
+      if (pitches.length === 0) {
+        pitchGrid.innerHTML = "<p>No pitches have been submitted yet.</p>";
+      } else {
+        pitches.reverse().forEach(pitch => {
+          const card = document.createElement("div");
+          card.classList.add("idea-card");
+          card.innerHTML = `
+            <h3>${pitch.title}</h3>
+            <p>${pitch.description}</p>
+            <p><strong>By:</strong> ${pitch.author}</p>
+            <p><em>Submitted: ${new Date(pitch.timestamp).toLocaleString()}</em></p>
+            <a href="#" class="btn">View Pitch</a>
+          `;
+          pitchGrid.appendChild(card);
+        });
+      }
+    }
+
     function toggleChat() {
       const chatBox = document.getElementById('chatBox');
       chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
@@ -106,6 +119,11 @@
         input.value = '';
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
+    }
+
+    function logout() {
+      localStorage.removeItem("sizaUser");
+      window.location.href = "home.html";
     }
   </script>
 
