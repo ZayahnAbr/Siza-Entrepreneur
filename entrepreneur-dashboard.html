@@ -2,61 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Entrepreneur Dashboard - Siza Innovator</title>
   <link rel="stylesheet" href="style.css" />
-
-
-  <!-- ✅ Firebase CDN -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
-      authDomain: "siza-platform.firebaseapp.com",
-      projectId: "siza-platform",
-      storageBucket: "siza-platform.firebasestorage.app",
-      messagingSenderId: "1019647938747",
-      appId: "1:1019647938747:web:5e2bf5f8f8b6fa11d7599e",
-      measurementId: "G-WB4MVXMLSH"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const pitchForm = document.getElementById("pitchForm");
-
-      pitchForm?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const title = document.getElementById("pitchTitle").value.trim();
-        const description = document.getElementById("pitchDescription").value.trim();
-        const financialProjections = document.getElementById("financialProjections").value.trim();
-
-        if (!title || !description || !financialProjections) {
-          alert("Please complete all fields.");
-          return;
-        }
-
-        try {
-          await addDoc(collection(db, "testPitches"), {
-            title,
-            description,
-            financialProjections,
-            timestamp: serverTimestamp()
-          });
-
-          alert("✅ Pitch submitted successfully!");
-          pitchForm.reset();
-        } catch (err) {
-          console.error("❌ Error:", err);
-          alert("Error submitting pitch.");
-        }
-      });
-    });
-  </script>
+  <!-- firebase scripts will be imported as module below -->
 </head>
 
 <body>
@@ -80,24 +29,36 @@
     <div class="container">
       <h2>Welcome back, <span id="username">User</span> 👋</h2>
 
-      <!-- ✅ PITCH FORM -->
+      <!-- PITCH FORM -->
       <div class="idea-card">
         <h3>Submit a New Pitch</h3>
         <form id="pitchForm">
-          <input type="text" id="pitchTitle" placeholder="Business Name" required /><br/>
-          <textarea id="pitchDescription" placeholder="Describe your idea..." required></textarea><br/>
-          <textarea id="financialProjections" placeholder="Financial Projections" required></textarea><br/>
+          <input type="text" id="pitchTitle" placeholder="Business Name" required /><br />
+
+          <textarea id="shortPitch" placeholder="Short Pitch (shown to investors)" required maxlength="200"></textarea><br />
+
+          <textarea id="pitchDescription" placeholder="Long Pitch / Description (NDA required)" required></textarea><br />
+          <textarea id="financialProjections" placeholder="Financial Projections (NDA required)" required></textarea><br />
+
+          <label for="pitchImage">Upload an image (optional):</label><br />
+          <input type="file" id="pitchImage" accept="image/*" /><br />
+          <img id="pitchImagePreview" src="" alt="Image preview" style="max-width: 300px; margin-top: 10px; display: none;" /><br />
+
+          <label for="pitchVideo">Upload a video (optional):</label><br />
+          <input type="file" id="pitchVideo" accept="video/*" /><br />
+          <video id="pitchVideoPreview" controls style="max-width: 300px; margin-top: 10px; display: none;"></video><br />
+
           <button type="submit" class="btn">Submit Pitch</button>
         </form>
       </div>
 
-      <!-- ✅ COMMUNITY FEED -->
+      <!-- COMMUNITY FEED -->
       <h2>Community Feed</h2>
       <form class="post-form" onsubmit="addPost(event)">
         <label for="new-post">Share something with the community</label>
         <textarea id="new-post" rows="4" placeholder="What's on your mind?" required></textarea>
         <div class="post-form-bottom">
-          <input type="file" id="post-image" accept="image/*" onchange="previewImage(event)">
+          <input type="file" id="post-image" accept="image/*" onchange="previewImage(event)" />
           <label for="post-image" class="image-upload-label">📷 Add Image</label>
           <div class="post-preview-img">
             <img id="image-preview" src="" alt="" style="display:none;" />
@@ -124,8 +85,123 @@
       <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
     </div>
   </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
+      authDomain: "siza-platform.firebaseapp.com",
+      projectId: "siza-platform",
+      storageBucket: "siza-platform.appspot.com",
+      messagingSenderId: "1019647938747",
+      appId: "1:1019647938747:web:5e2bf5f8f8b6fa11d7599e",
+      measurementId: "G-WB4MVXMLSH",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const pitchForm = document.getElementById("pitchForm");
+      const imageInput = document.getElementById("pitchImage");
+      const imagePreview = document.getElementById("pitchImagePreview");
+      const videoInput = document.getElementById("pitchVideo");
+      const videoPreview = document.getElementById("pitchVideoPreview");
+
+      // preview selected image
+      imageInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            imagePreview.src = reader.result;
+            imagePreview.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        } else {
+          imagePreview.src = "";
+          imagePreview.style.display = "none";
+        }
+      });
+
+      // preview selected video
+      videoInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const videoURL = URL.createObjectURL(file);
+          videoPreview.src = videoURL;
+          videoPreview.style.display = "block";
+        } else {
+          videoPreview.src = "";
+          videoPreview.style.display = "none";
+        }
+      });
+
+      pitchForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById("pitchTitle").value.trim();
+        const shortPitch = document.getElementById("shortPitch").value.trim();
+        const description = document.getElementById("pitchDescription").value.trim();
+        const financialProjections = document.getElementById("financialProjections").value.trim();
+
+        if (!title || !shortPitch || !description || !financialProjections) {
+          alert("Please complete all fields.");
+          return;
+        }
+
+        try {
+          let imageUrl = "";
+          let videoUrl = "";
+
+          if (imageInput.files.length > 0) {
+            const imageFile = imageInput.files[0];
+            const imageRef = ref(storage, `pitchImages/${Date.now()}_${imageFile.name}`);
+            await uploadBytes(imageRef, imageFile);
+            imageUrl = await getDownloadURL(imageRef);
+          }
+
+          if (videoInput.files.length > 0) {
+            const videoFile = videoInput.files[0];
+            const videoRef = ref(storage, `pitchVideos/${Date.now()}_${videoFile.name}`);
+            await uploadBytes(videoRef, videoFile);
+            videoUrl = await getDownloadURL(videoRef);
+          }
+
+          await addDoc(collection(db, "testPitches"), {
+            title,
+            shortPitch,
+            description,
+            financialProjections,
+            imageUrl,
+            videoUrl,
+            timestamp: serverTimestamp(),
+          });
+
+          alert("✅ Pitch submitted successfully!");
+          pitchForm.reset();
+          imagePreview.src = "";
+          imagePreview.style.display = "none";
+          videoPreview.src = "";
+          videoPreview.style.display = "none";
+        } catch (err) {
+          console.error("❌ Error:", err);
+          alert("Error submitting pitch.");
+        }
+      });
+    });
+
+  </script>
+
+  <script>
+    function logout() {
+      localStorage.removeItem("sizaUser");
+      window.location.href = "home.html";
+    }
+  </script>
 </body>
 </html>
-
-
-

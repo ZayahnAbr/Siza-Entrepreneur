@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pitch Details - Siza Innovator</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
+      authDomain: "siza-platform.firebaseapp.com",
+      projectId: "siza-platform",
+      storageBucket: "siza-platform.firebasestorage.app",
+      messagingSenderId: "1019647938747",
+      appId: "1:1019647938747:web:5e2bf5f8f8b6fa11d7599e",
+      measurementId: "G-WB4MVXMLSH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadPitch() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pitchId = urlParams.get("pitchId");
+
+      if (!pitchId) {
+        document.getElementById("pitchDetails").innerHTML = "<p>No pitch ID provided in URL.</p>";
+        return;
+      }
+
+      const docRef = doc(db, "testPitches", pitchId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const pitch = docSnap.data();
+        document.getElementById("pitchTitle").textContent = pitch.title || "Untitled Pitch";
+        document.getElementById("pitchDescription").textContent = pitch.description || "No description provided.";
+        document.getElementById("financialProjections").textContent = pitch.financialProjections || "N/A";
+        document.getElementById("entrepreneurID").textContent = pitch.entrepreneurID || "Unknown";
+        document.getElementById("author").textContent = pitch.author || "Unknown";
+        document.getElementById("email").textContent = pitch.email || "Unknown";
+      } else {
+        document.getElementById("pitchDetails").innerHTML = "<p>Pitch not found.</p>";
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", loadPitch);
+  </script>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Siza Innovator</h1>
+      <nav>
+        <ul>
+          <li><a href="investor-dashboard.html">Dashboard</a></li>
+          <li><a href="messages.html">Messages</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="dashboard-section">
+    <div class="container" id="pitchDetails">
+      <h2 id="pitchTitle">Loading pitch...</h2>
+      <p><strong>Description:</strong> <span id="pitchDescription"></span></p>
+      <p><strong>Financial Projections:</strong> <span id="financialProjections"></span></p>
+      <p><strong>Entrepreneur ID:</strong> <span id="entrepreneurID"></span></p>
+      <p><strong>Author:</strong> <span id="author"></span></p>
+      <p><strong>Email:</strong> <span id="email"></span></p>
+    </div>
+  </section>
+
+  <script>
+    function logout() {
+      localStorage.removeItem("sizaUser");
+      window.location.href = "home.html";
+    }
+  </script>
+</body>
+</html>
