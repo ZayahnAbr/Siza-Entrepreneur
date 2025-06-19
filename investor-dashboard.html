@@ -38,9 +38,7 @@
       </div>
 
       <!-- ✅ pitch cards will be injected here -->
-      <div class="card-grid" id="pitchGrid">
-        <!-- JavaScript will load pitch cards here -->
-      </div>
+      <div class="card-grid" id="pitchGrid"></div>
     </div>
   </section>
 
@@ -50,11 +48,8 @@
     </div>
   </footer>
 
-  <!-- chat popup html -->
-  <div class="chat-toggle" onclick="toggleChat()">
-    💬 Messages
-  </div>
-
+  <!-- 💬 Chat Popup -->
+  <div class="chat-toggle" onclick="toggleChat()">💬 Messages</div>
   <div class="chat-box" id="chatBox">
     <div class="chat-header">
       <span>Messages</span>
@@ -76,31 +71,50 @@
     </form>
   </div>
 
-  <!-- ✅ pitch + chat script -->
-  <script>
-    // Show submitted pitches from localStorage
+  <!-- ✅ FIREBASE V9 MODULES -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
+      authDomain: "siza-platform.firebaseapp.com",
+      projectId: "siza-platform",
+      storageBucket: "siza-platform.firebasestorage.app",
+      messagingSenderId: "1019647938747",
+      appId: "1:1019647938747:web:5e2bf5f8f8b6fa11d7599e",
+      measurementId: "G-WB4MVXMLSH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const pitchGrid = document.getElementById("pitchGrid");
-    const pitches = JSON.parse(localStorage.getItem("sizaPitches")) || [];
 
-    if (pitchGrid) {
-      if (pitches.length === 0) {
-        pitchGrid.innerHTML = "<p>No pitches have been submitted yet.</p>";
-      } else {
-        pitches.reverse().forEach(pitch => {
-          const card = document.createElement("div");
-          card.classList.add("idea-card");
-          card.innerHTML = `
-            <h3>${pitch.title}</h3>
-            <p>${pitch.description}</p>
-            <p><strong>By:</strong> ${pitch.author}</p>
-            <p><em>Submitted: ${new Date(pitch.timestamp).toLocaleString()}</em></p>
-            <a href="#" class="btn">View Pitch</a>
-          `;
-          pitchGrid.appendChild(card);
-        });
-      }
+    const q = query(collection(db, "testPitches"), orderBy("timestamp", "desc"));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      pitchGrid.innerHTML = "<p>No pitches submitted yet.</p>";
+    } else {
+      snapshot.forEach(doc => {
+        const pitch = doc.data();
+        const card = document.createElement("div");
+        card.classList.add("idea-card");
+        card.innerHTML = `
+          <h3>${pitch.title ?? "Untitled Pitch"}</h3>
+          <p><strong>Description:</strong> ${pitch.description ?? "No description provided."}</p>
+          <p><strong>Financial Projections:</strong> ${pitch.financialProjections ?? "N/A"}</p>
+          <p><strong>Entrepreneur ID:</strong> ${pitch.entrepreneurID ?? "Unknown"}</p>
+          <a href="#" class="btn">View Pitch</a>
+        `;
+        pitchGrid.appendChild(card);
+      });
     }
+  </script>
 
+  <script>
+    // ✅ Chat + logout logic
     function toggleChat() {
       const chatBox = document.getElementById('chatBox');
       chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
@@ -129,4 +143,3 @@
 
 </body>
 </html>
-

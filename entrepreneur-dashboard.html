@@ -5,11 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Entrepreneur Dashboard - Siza Innovator</title>
   <link rel="stylesheet" href="style.css" />
+
+
+  <!-- ✅ Firebase CDN -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
+      authDomain: "siza-platform.firebaseapp.com",
+      projectId: "siza-platform",
+      storageBucket: "siza-platform.firebasestorage.app",
+      messagingSenderId: "1019647938747",
+      appId: "1:1019647938747:web:5e2bf5f8f8b6fa11d7599e",
+      measurementId: "G-WB4MVXMLSH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const pitchForm = document.getElementById("pitchForm");
+
+      pitchForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById("pitchTitle").value.trim();
+        const description = document.getElementById("pitchDescription").value.trim();
+        const financialProjections = document.getElementById("financialProjections").value.trim();
+
+        if (!title || !description || !financialProjections) {
+          alert("Please complete all fields.");
+          return;
+        }
+
+        try {
+          await addDoc(collection(db, "testPitches"), {
+            title,
+            description,
+            financialProjections,
+            timestamp: serverTimestamp()
+          });
+
+          alert("✅ Pitch submitted successfully!");
+          pitchForm.reset();
+        } catch (err) {
+          console.error("❌ Error:", err);
+          alert("Error submitting pitch.");
+        }
+      });
+    });
+  </script>
 </head>
+
 <body>
-  JSON.parse(localStorage.getItem("sizaPitches"))
-
-
   <header>
     <div class="container">
       <h1>Siza Entrepreneur</h1>
@@ -29,29 +79,6 @@
   <section class="dashboard-section">
     <div class="container">
       <h2>Welcome back, <span id="username">User</span> 👋</h2>
-      <p>Here’s a quick overview of your activity:</p>
-
-      <div class="card-grid">
-        <div class="idea-card">
-          <h3>Your Active Pitch</h3>
-          <p><strong>Project:</strong> SolarBloom</p>
-          <p><strong>Status:</strong> Live</p>
-          <p><strong>Funding Progress:</strong> $3,200 / $10,000</p>
-          <a href="#" class="btn">View Pitch</a>
-        </div>
-
-        <div class="idea-card">
-          <h3>Messages</h3>
-          <p>You have 2 unread messages from investors.</p>
-          <a href="#" class="btn">Open Inbox</a>
-        </div>
-
-        <div class="idea-card">
-          <h3>Upcoming Meeting</h3>
-          <p>📅 6 June, 4PM with Investor Alex</p>
-          <a href="https://teams.microsoft.com/meeting-link" target="_blank" class="btn">Join Call</a>
-        </div>
-      </div>
 
       <!-- ✅ PITCH FORM -->
       <div class="idea-card">
@@ -59,6 +86,7 @@
         <form id="pitchForm">
           <input type="text" id="pitchTitle" placeholder="Business Name" required /><br/>
           <textarea id="pitchDescription" placeholder="Describe your idea..." required></textarea><br/>
+          <textarea id="financialProjections" placeholder="Financial Projections" required></textarea><br/>
           <button type="submit" class="btn">Submit Pitch</button>
         </form>
       </div>
@@ -68,15 +96,12 @@
       <form class="post-form" onsubmit="addPost(event)">
         <label for="new-post">Share something with the community</label>
         <textarea id="new-post" rows="4" placeholder="What's on your mind?" required></textarea>
-
         <div class="post-form-bottom">
           <input type="file" id="post-image" accept="image/*" onchange="previewImage(event)">
           <label for="post-image" class="image-upload-label">📷 Add Image</label>
-
           <div class="post-preview-img">
             <img id="image-preview" src="" alt="" style="display:none;" />
           </div>
-
           <button type="submit" class="btn">Post</button>
         </div>
       </form>
@@ -99,32 +124,8 @@
       <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
     </div>
   </footer>
-
-  <!-- ✅ CHAT POPUP -->
-  <div class="chat-toggle" onclick="toggleChat()">💬 Messages</div>
-  <div class="chat-box" id="chatBox">
-    <div class="chat-header">
-      <span>Messages</span>
-      <button onclick="toggleChat()">×</button>
-    </div>
-    <div class="chat-messages">
-      <div class="message">
-        <strong>Investor Alex:</strong>
-        <p>Hi! Let's connect about your pitch.</p>
-      </div>
-      <div class="message me">
-        <strong>You:</strong>
-        <p>Sounds great! When are you available?</p>
-      </div>
-    </div>
-    <form class="chat-input" onsubmit="sendMessage(event)">
-      <input type="text" id="chatInput" placeholder="Type a message..." />
-      <button type="submit">Send</button>
-    </form>
-  </div>
-
-  <script src="script.js"></script>
 </body>
 </html>
+
 
 
