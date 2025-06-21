@@ -29,44 +29,61 @@
     <div class="container">
       <h2>Welcome back, <span id="username">User</span> 👋</h2>
 
-      <!-- PITCH FORM -->
+ <!-- ===== PITCH SUBMISSION FORM ===== -->
       <div class="idea-card">
         <h3>Submit a New Pitch</h3>
         <form id="pitchForm">
+          <!-- Input for business name -->
           <input type="text" id="pitchTitle" placeholder="Business Name" required /><br />
 
+          <!-- Short summary pitch for investors -->
           <textarea id="shortPitch" placeholder="Short Pitch (shown to investors)" required maxlength="200"></textarea><br />
 
+          <!-- Full pitch description, under NDA -->
           <textarea id="pitchDescription" placeholder="Long Pitch / Description (NDA required)" required></textarea><br />
+
+          <!-- Financial information, also under NDA -->
           <textarea id="financialProjections" placeholder="Financial Projections (NDA required)" required></textarea><br />
 
+          <!-- Optional image upload -->
           <label for="pitchImage">Upload an image (optional):</label><br />
           <input type="file" id="pitchImage" accept="image/*" /><br />
           <img id="pitchImagePreview" src="" alt="Image preview" style="max-width: 300px; margin-top: 10px; display: none;" /><br />
 
+          <!-- Optional video upload -->
           <label for="pitchVideo">Upload a video (optional):</label><br />
           <input type="file" id="pitchVideo" accept="video/*" /><br />
           <video id="pitchVideoPreview" controls style="max-width: 300px; margin-top: 10px; display: none;"></video><br />
 
+          <!-- Submit button -->
           <button type="submit" class="btn">Submit Pitch</button>
         </form>
       </div>
 
-      <!-- COMMUNITY FEED -->
+      <!-- ===== COMMUNITY POST FEED ===== -->
       <h2>Community Feed</h2>
+
+      <!-- Form for posting public messages to the community -->
       <form class="post-form" onsubmit="addPost(event)">
         <label for="new-post">Share something with the community</label>
         <textarea id="new-post" rows="4" placeholder="What's on your mind?" required></textarea>
+
         <div class="post-form-bottom">
+          <!-- Upload an image for the post -->
           <input type="file" id="post-image" accept="image/*" onchange="previewImage(event)" />
           <label for="post-image" class="image-upload-label">📷 Add Image</label>
+
+          <!-- Preview of selected image -->
           <div class="post-preview-img">
             <img id="image-preview" src="" alt="" style="display:none;" />
           </div>
+
+          <!-- Post submit button -->
           <button type="submit" class="btn">Post</button>
         </div>
       </form>
 
+      <!-- Hardcoded example of a post -->
       <div id="post-feed" class="forum-thread">
         <div class="idea-card post">
           <strong>Fatima 🇿🇦</strong>
@@ -80,17 +97,21 @@
     </div>
   </section>
 
+  <!-- Page footer -->
   <footer>
     <div class="container">
       <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
     </div>
   </footer>
 
+  <!-- ===== FIREBASE LOGIC (MODULE) ===== -->
   <script type="module">
+    // Import Firebase services
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
       authDomain: "siza-platform.firebaseapp.com",
@@ -101,10 +122,12 @@
       measurementId: "G-WB4MVXMLSH",
     };
 
+    // Initialize Firebase app, Firestore and Storage
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const storage = getStorage(app);
 
+    // Runs when the page loads
     document.addEventListener("DOMContentLoaded", () => {
       const pitchForm = document.getElementById("pitchForm");
       const imageInput = document.getElementById("pitchImage");
@@ -112,7 +135,7 @@
       const videoInput = document.getElementById("pitchVideo");
       const videoPreview = document.getElementById("pitchVideoPreview");
 
-      // preview selected image
+      // Show preview of selected image
       imageInput.addEventListener("change", (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -128,7 +151,7 @@
         }
       });
 
-      // preview selected video
+      // Show preview of selected video
       videoInput.addEventListener("change", (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -141,14 +164,17 @@
         }
       });
 
+      // Handle pitch form submission
       pitchForm?.addEventListener("submit", async (e) => {
         e.preventDefault();
 
+        // Get form values
         const title = document.getElementById("pitchTitle").value.trim();
         const shortPitch = document.getElementById("shortPitch").value.trim();
         const description = document.getElementById("pitchDescription").value.trim();
         const financialProjections = document.getElementById("financialProjections").value.trim();
 
+        // Validation check
         if (!title || !shortPitch || !description || !financialProjections) {
           alert("Please complete all fields.");
           return;
@@ -158,6 +184,7 @@
           let imageUrl = "";
           let videoUrl = "";
 
+          // Upload image to Firebase Storage if selected
           if (imageInput.files.length > 0) {
             const imageFile = imageInput.files[0];
             const imageRef = ref(storage, `pitchImages/${Date.now()}_${imageFile.name}`);
@@ -165,6 +192,7 @@
             imageUrl = await getDownloadURL(imageRef);
           }
 
+          // Upload video to Firebase Storage if selected
           if (videoInput.files.length > 0) {
             const videoFile = videoInput.files[0];
             const videoRef = ref(storage, `pitchVideos/${Date.now()}_${videoFile.name}`);
@@ -172,6 +200,7 @@
             videoUrl = await getDownloadURL(videoRef);
           }
 
+          // Save pitch data to Firestore
           await addDoc(collection(db, "testPitches"), {
             title,
             shortPitch,
@@ -182,7 +211,8 @@
             timestamp: serverTimestamp(),
           });
 
-          alert("✅ Pitch submitted successfully!");
+          // Reset form and previews after successful submission
+          alert(" Pitch submitted successfully!");
           pitchForm.reset();
           imagePreview.src = "";
           imagePreview.style.display = "none";
@@ -194,10 +224,11 @@
         }
       });
     });
-
   </script>
 
+  <!-- ===== LOGOUT FUNCTION ===== -->
   <script>
+    // Logs the user out by clearing localStorage and redirecting to homepage
     function logout() {
       localStorage.removeItem("sizaUser");
       window.location.href = "home.html";

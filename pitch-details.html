@@ -5,14 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pitch Details - Siza Innovator</title>
   <link rel="stylesheet" href="style.css" />
+
+  
+  <style>
+    
+
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .pitch-card {
+      background: white;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .pitch-card h2 {
+      font-size: 2rem;
+      color: #0f4c81;
+      margin-bottom: 1rem;
+    }
+
+    .pitch-detail {
+      margin-bottom: 1.2rem;
+    }
+
+    .pitch-detail strong {
+      display: block;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .pitch-detail span {
+      color: #444;
+      font-size: 1.05rem;
+    }
+  </style>
+
+  <!-- firebase logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import {
-      getFirestore,
-      doc,
-      getDoc
-    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
+    // firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
       authDomain: "siza-platform.firebaseapp.com",
@@ -26,9 +66,10 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // fetch and display pitch data
     async function loadPitch() {
       const urlParams = new URLSearchParams(window.location.search);
-      const pitchId = urlParams.get("pitchId");
+      const pitchId = urlParams.get("id");
 
       if (!pitchId) {
         document.getElementById("pitchDetails").innerHTML = "<p>No pitch ID provided in URL.</p>";
@@ -55,6 +96,7 @@
   </script>
 </head>
 <body>
+  <!-- header nav -->
   <header>
     <div class="container">
       <h1>Siza Innovator</h1>
@@ -71,17 +113,37 @@
     </div>
   </header>
 
-  <section class="dashboard-section">
-    <div class="container" id="pitchDetails">
-      <h2 id="pitchTitle">Loading pitch...</h2>
-      <p><strong>Description:</strong> <span id="pitchDescription"></span></p>
-      <p><strong>Financial Projections:</strong> <span id="financialProjections"></span></p>
-      <p><strong>Entrepreneur ID:</strong> <span id="entrepreneurID"></span></p>
-      <p><strong>Author:</strong> <span id="author"></span></p>
-      <p><strong>Email:</strong> <span id="email"></span></p>
+  <!-- pitch details section -->
+  <section class="pitch-card container" id="pitchDetails">
+    <h2 id="pitchTitle">Loading pitch...</h2>
+
+    <div class="pitch-detail">
+      <strong>Description:</strong>
+      <span id="pitchDescription"></span>
+    </div>
+
+    <div class="pitch-detail">
+      <strong>Financial Projections:</strong>
+      <span id="financialProjections"></span>
+    </div>
+
+    <div class="pitch-detail">
+      <strong>Entrepreneur ID:</strong>
+      <span id="entrepreneurID"></span>
+    </div>
+
+    <div class="pitch-detail">
+      <strong>Author:</strong>
+      <span id="author"></span>
+    </div>
+
+    <div class="pitch-detail">
+      <strong>Email:</strong>
+      <span id="email"></span>
     </div>
   </section>
 
+  <!-- logout script -->
   <script>
     function logout() {
       localStorage.removeItem("sizaUser");
@@ -90,3 +152,4 @@
   </script>
 </body>
 </html>
+

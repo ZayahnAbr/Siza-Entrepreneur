@@ -1,16 +1,25 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- character encoding and responsive design settings -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- browser tab title -->
   <title>Siza Innovator - Investor Dashboard</title>
+
+  <!-- external stylesheet for styling -->
   <link rel="stylesheet" href="style.css"/>
+
+  <!-- inline styles for the NDA modal popup -->
   <style>
-    /* Simple modal styling */
+    /* resets default spacing */
+
+
     .modal {
       position: fixed;
       top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.5); /* dim background */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -32,11 +41,13 @@
 </head>
 <body>
 
+  <!-- header with navigation menu -->
   <header>
     <div class="container">
       <h1>Siza Innovator</h1>
       <nav>
         <ul>
+          <!-- navigation links -->
           <li><a href="index.html">Home</a></li>
           <li><a href="messages.html">Messages</a></li>
           <li><a href="resources.html">Resources</a></li>
@@ -48,10 +59,12 @@
     </div>
   </header>
 
+  <!-- main dashboard section -->
   <section class="dashboard-section">
     <div class="container">
       <h2>Welcome, Investor</h2>
 
+      <!-- search + filter bar -->
       <div class="filter-bar">
         <input type="text" placeholder="Search ideas..." />
         <select>
@@ -61,24 +74,27 @@
         </select>
       </div>
 
-      <!-- pitch cards container -->
+      <!-- where pitch cards will appear -->
       <div class="card-grid" id="pitchGrid"></div>
     </div>
   </section>
 
+  <!-- page footer -->
   <footer>
     <div class="container">
       <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- Chat Popup -->
+  <!-- ====== CHAT BOX UI ====== -->
   <div class="chat-toggle" onclick="toggleChat()">💬 Messages</div>
   <div class="chat-box" id="chatBox" style="display:none;">
     <div class="chat-header">
       <span>Messages</span>
       <button onclick="toggleChat()">×</button>
     </div>
+
+    <!-- example chat messages -->
     <div class="chat-messages">
       <div class="message">
         <strong>Investor Alex:</strong>
@@ -89,13 +105,15 @@
         <p>Sounds great! When are you available?</p>
       </div>
     </div>
+
+    <!-- input field to send new message -->
     <form class="chat-input" onsubmit="sendMessage(event)">
       <input type="text" id="chatInput" placeholder="Type a message..." />
       <button type="submit">Send</button>
     </form>
   </div>
 
-  <!-- NDA Modal -->
+  <!-- ====== NDA MODAL ====== -->
   <div id="ndaModal" class="modal" style="display:none;">
     <div class="modal-content">
       <h3>Non-Disclosure Agreement</h3>
@@ -108,10 +126,13 @@
     </div>
   </div>
 
+  <!-- ====== FIREBASE LOGIC ====== -->
   <script type="module">
+    // import firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
+    // firebase project configuration
     const firebaseConfig = {
       apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
       authDomain: "siza-platform.firebaseapp.com",
@@ -122,16 +143,19 @@
       measurementId: "G-WB4MVXMLSH"
     };
 
+    // initialize app and get firestore instance
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // get DOM elements
     const pitchGrid = document.getElementById("pitchGrid");
     const ndaModal = document.getElementById("ndaModal");
     const acceptBtn = document.getElementById("acceptNDA");
     const declineBtn = document.getElementById("declineNDA");
 
-    let selectedPitchId = null; // store clicked pitch id
+    let selectedPitchId = null; // to keep track of clicked pitch
 
+    // load and display pitches from Firestore
     async function loadPitches() {
       const q = query(collection(db, "testPitches"), orderBy("timestamp", "desc"));
       const snapshot = await getDocs(q);
@@ -141,24 +165,26 @@
         return;
       }
 
+      // loop through each pitch document
       snapshot.forEach(doc => {
         const pitch = doc.data();
         const pitchId = doc.id;
 
+        // create card for each pitch
         const card = document.createElement("div");
         card.classList.add("idea-card");
         card.innerHTML = `
           <h3>${pitch.title ?? "Untitled Pitch"}</h3>
           <p><strong>Description:</strong> ${pitch.description ?? "No description provided."}</p>
           <p><strong>Financial Projections:</strong> ${pitch.financialProjections ?? "N/A"}</p>
-          <p><strong>Entrepreneur ID:</strong> ${pitch.entrepreneurID ?? "Unknown"}</p>
+          
           <a href="#" class="btn view-pitch-btn" data-pitch-id="${pitchId}">View Pitch</a>
         `;
 
         pitchGrid.appendChild(card);
       });
 
-      // add click event to view pitch buttons
+      // attach NDA modal trigger to view buttons
       document.querySelectorAll(".view-pitch-btn").forEach(btn => {
         btn.addEventListener("click", e => {
           e.preventDefault();
@@ -168,29 +194,32 @@
       });
     }
 
-    // handle NDA modal buttons
+    // handle user accepting NDA
     acceptBtn.addEventListener("click", () => {
       ndaModal.style.display = "none";
-      // redirect to pitch details page, or show modal with pitch details
-      // example redirect with pitchId as param:
+      // redirect to pitch details page with pitch ID as parameter
       window.location.href = `pitch-details.html?id=${selectedPitchId}`;
     });
 
+    // handle user declining NDA
     declineBtn.addEventListener("click", () => {
       ndaModal.style.display = "none";
       selectedPitchId = null;
     });
 
+    // load pitches when page is ready
     document.addEventListener("DOMContentLoaded", loadPitches);
   </script>
 
+  <!-- ====== CHAT + LOGOUT FUNCTIONS ====== -->
   <script>
-    // Chat and logout functions
+    // toggles visibility of chat box
     function toggleChat() {
       const chatBox = document.getElementById('chatBox');
       chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
     }
 
+    // handles sending a chat message
     function sendMessage(e) {
       e.preventDefault();
       const input = document.getElementById('chatInput');
@@ -206,6 +235,7 @@
       }
     }
 
+    // logs the user out and redirects to homepage
     function logout() {
       localStorage.removeItem("sizaUser");
       window.location.href = "home.html";
