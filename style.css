@@ -403,4 +403,26 @@ form textarea {
 
 }
 
+/* Request Deal Room */
+.pitch-actions {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.pitch-actions .btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #2771b3;
+  color: white;
+  font-weight: bold;
+}
+
+.pitch-actions .btn.secondary {
+  background-color: #555;
+}
+
+
  
