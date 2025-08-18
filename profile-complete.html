@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Complete | Siza Innovator</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .finish-wrap { max-width: 760px; margin: 3rem auto; text-align: center; background:#fff; padding:2rem; border-radius:12px; box-shadow:0 6px 20px rgba(2,8,23,.06); }
+    .finish-wrap h1 { margin-bottom:.5rem; }
+    .finish-wrap p { color:#475569; }
+    .finish-actions { margin-top:1.25rem; display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; }
+    .btn.primary { background:#0077cc; color:#fff; border:none; padding:.8rem 1.1rem; border-radius:8px; text-decoration:none; font-weight:700; }
+    .btn.secondary { background:#e2e8f0; color:#0f172a; border:none; padding:.8rem 1.1rem; border-radius:8px; text-decoration:none; font-weight:700; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;">
+      <a href="index.html" class="brand" style="color:#fff;text-decoration:none;font-weight:700;">Siza Innovator</a>
+      <nav>
+        <ul style="list-style:none;display:flex;gap:1rem;align-items:center;">
+          <li><a id="nav-dashboard" href="#" style="display:none;">My Dashboard</a></li>
+          <li><a id="nav-edit" href="#" style="display:none;">Edit Profile</a></li>
+          <li><a id="nav-logout" href="#" style="display:none;">Log out</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="finish-wrap">
+      <h1>All set 🎉</h1>
+      <p>Your profile has been saved and looks great. You can head to your dashboard now.</p>
+      <div class="finish-actions">
+        <a id="toDashboard" class="btn primary" href="#">Go to my dashboard</a>
+        <a class="btn secondary" href="index.html">Back to Home</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // choose dashboard from ?role=investor|entrepreneur
+    const params = new URLSearchParams(location.search);
+    const role = params.get("role") || "entrepreneur";
+    const toDash = document.getElementById("toDashboard");
+    toDash.href = role === "investor" ? "investor-dashboard.html" : "entrepreneur-dashboard.html";
+  </script>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>

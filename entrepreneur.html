@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Siza Innovator – Entrepreneur Profile</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body data-profile="entrepreneur">
+  <!-- Header / Nav -->
+  <header>
+    <div class="container">
+      <h1>Siza Innovator</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="messages.html">Messages</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="deal-room.html">Deal Room</a></li>
+
+          <!-- Dynamic items filled by script.js -->
+          <li><a id="nav-dashboard" href="#" style="display:none;">My Dashboard</a></li>
+          <li><a id="nav-profile"  href="#" style="display:none;">My Profile</a></li>
+          <li><a id="nav-edit"      href="#" style="display:none;">Edit Profile</a></li>
+          <li><a id="nav-logout"    href="#" style="display:none;">Log out</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Skeleton while loading -->
+  <section class="profile-section profile-skeleton" style="display:none;">
+    <div class="container">
+      <div class="card">
+        <p>Loading profile…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Profile -->
+  <section class="profile-section profile-main" style="display:none;">
+    <div class="container">
+      <!-- Header card -->
+      <div class="card">
+        <div class="profile-header">
+          <img id="profAvatar" class="profile-img" alt="Profile picture" />
+          <div>
+            <h2 id="profName">—</h2>
+            <p>
+              <span id="profRole">Entrepreneur</span> · <span id="profLocation">—</span>
+              <span id="goldBadge" title="Gold Verified" style="display:none; margin-left:.5rem;">🏅</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="profile-content">
+          <h3>Business Idea</h3>
+          <p id="bizIdea">—</p>
+
+          <h3>About</h3>
+          <p id="bizDesc">—</p>
+
+          <div class="card" style="margin-top:1rem;">
+            <p><strong>Industry:</strong> <span id="bizIndustry">—</span></p>
+            <p><strong>Funding Goal:</strong> <span id="bizFunding">—</span></p>
+          </div>
+
+          <h3 style="margin-top:1.25rem;">Documents</h3>
+          <ul>
+            <li id="docDeck">Pitch Deck: —</li>
+            <li id="docPlan">Business Plan: —</li>
+            <li id="docForecast">Financial Forecast: —</li>
+          </ul>
+
+          <div id="videoWrap" style="margin-top:1rem; display:none;">
+            <h3>Pitch Video</h3>
+            <video controls width="100%">
+              <source id="pitchVideoSrc" src="" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="pitch-actions">
+        <a class="btn" href="edit-entrepreneur.html">Edit Profile</a>
+        <a class="btn secondary" href="entrepreneur-dashboard.html">Go to Dashboard</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>

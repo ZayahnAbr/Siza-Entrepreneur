@@ -1,26 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- character encoding and responsive design settings -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <!-- browser tab title -->
   <title>Siza Innovator - Investor Dashboard</title>
-
-  <!-- external stylesheet for styling -->
   <link rel="stylesheet" href="style.css"/>
-
-  <!-- inline styles for the NDA modal popup -->
   <style>
-    /* resets default spacing */
-
-
     .modal {
       position: fixed;
       top:0; left:0; right:0; bottom:0;
-      background: rgba(0,0,0,0.5); /* dim background */
-      display: flex;
+      background: rgba(0,0,0,0.5);
+      display: none;           /* hidden by default; shown by script */
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -29,253 +19,144 @@
       background: white;
       padding: 1.5rem;
       border-radius: 8px;
-      max-width: 400px;
+      max-width: 500px;
+      width: 90%;
       text-align: center;
     }
     .modal-actions {
       margin-top: 1rem;
       display: flex;
-      justify-content: space-around;
+      gap: .75rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
   </style>
 </head>
 <body>
 
-  <!-- header with navigation menu -->
-  <header>
-    <div class="container">
-      <h1>Siza Innovator</h1>
-      <nav>
-        <ul>
-          <!-- navigation links -->
-          <li><a href="index.html">Home</a></li>
-          <li><a href="messages.html">Messages</a></li>
-          <li><a href="resources.html">Resources</a></li>
-          <li><a href="events.html">Events</a></li>
-          <li><a href="forum.html">Forum</a></li>
-          <li><a href="#" onclick="logout()">Logout</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<header>
+  <div class="container header-row">
+    <a class="brand" href="index.html">Siza Innovator</a>
 
-  <!-- main dashboard section -->
-  <section class="dashboard-section">
-    <div class="container">
-      <h2>Welcome, Investor</h2>
+    <nav class="site-nav">
+      <ul class="left">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="messages.html">Messages</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="forum.html">Forum</a></li>
+        <li><a href="deal-room.html">Deal Room</a></li>
+      </ul>
 
-      <!-- search + filter bar -->
-      <div class="filter-bar">
-        <input type="text" placeholder="Search ideas..." />
-        <select>
-          <option>All Industries</option>
-          <option>Energy</option>
-          <option>Tech</option>
-        </select>
-      </div>
+      <ul class="right">
+        <!-- shown when NOT logged in -->
+        <li id="nav-login"><a href="#auth">Log in</a></li>
 
-      <!-- where pitch cards will appear -->
-      <div class="card-grid" id="pitchGrid"></div>
-    </div>
-  </section>
-
-  <!-- page footer -->
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <!-- ====== CHAT BOX UI ====== -->
-  <div class="chat-toggle" onclick="toggleChat()">💬 Messages</div>
-  <div class="chat-box" id="chatBox" style="display:none;">
-    <div class="chat-header">
-      <span>Messages</span>
-      <button onclick="toggleChat()">×</button>
-    </div>
-
-    <!-- example chat messages -->
-    <div class="chat-messages">
-      <div class="message">
-        <strong>Investor Alex:</strong>
-        <p>Hi! Let's connect about your pitch.</p>
-      </div>
-      <div class="message me">
-        <strong>You:</strong>
-        <p>Sounds great! When are you available?</p>
-      </div>
-    </div>
-
-    <!-- input field to send new message -->
-    <form class="chat-input" onsubmit="sendMessage(event)">
-      <input type="text" id="chatInput" placeholder="Type a message..." />
-      <button type="submit">Send</button>
-    </form>
+        <!-- shown when logged in (script.js fills hrefs and shows them) -->
+        <li><a id="nav-dashboard" style="display:none;">My Dashboard</a></li>
+        <li><a id="nav-profile"  style="display:none;">My Profile</a></li>
+        <li><a id="nav-edit"     style="display:none;">Edit Profile</a></li>
+        <li><a id="nav-logout"   href="#" style="display:none;">Log out</a></li>
+        <li>
+          <img id="navAvatar" class="nav-avatar" alt="User avatar"
+               style="display:none;width:32px;height:32px;border-radius:50%;object-fit:cover;margin-left:.5rem;">
+        </li>
+      </ul>
+    </nav>
   </div>
+</header>
 
-  <!-- NDA Modal -->
 
-  <div id="ndaModal" class="modal" style="display:none;">
 
-    <div class="modal-content">
+<section class="dashboard-section">
+  <div class="container">
+    <h2>Welcome, <span id="username">Investor</span> 👋</h2>
 
-      <h3>Non-Disclosure Agreement</h3>
-
-          <hr style="border: 2px solid #333; width: 80%; margin: 20px auto;">
-
-          <div class="modal-content" style="text-align: left;">
-
-              <p><b>Please read the following statement carefully and acknowledge that you have read and approved it by providing your details below.</b></p>
-
-              <br>
-
-              <p>By proceeding, you agree not to copy, share, or distribute any part of this pitch without explicit permission from the entrepreneur.</p>
-
-              <br>
-
-              <p><b> NB: </b> An e-Signature is the electronic equivalent of a handwritten signature. Individuals who fail to comply with the above terms may be held legally liable.</p>
-
-              <br>
-
-              <p>Enter your  full name and surname</p>
-
-              <br>
-
-              <input type="text" class="large-textbox" placeholder="Type your name here"> <br>
-
-              <br>
-
-             <p>Do you accept the terms of this NDA?</p>
-
-          </div>
-
-      <div class="modal-actions">
-
-        <button id="acceptNDA" class="btn">I Accept</button>
-
-        <button id="declineNDA" class="btn secondary">Cancel</button>
-
-      </div>
-
+    <div class="filter-bar">
+      <input type="text" placeholder="Search ideas..." />
+      <select>
+        <option>All Industries</option>
+        <option>Energy</option>
+        <option>Tech</option>
+      </select>
     </div>
 
+    <div class="card-grid" id="pitchGrid"></div>
   </div>
+</section>
 
-  <!-- ====== FIREBASE LOGIC ====== -->
-  <script type="module">
-    // import firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
+  </div>
+</footer>
 
-    // firebase project configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
-      authDomain: "siza-platform.firebaseapp.com",
-      projectId: "siza-platform",
-      storageBucket: "siza-platform.firebasestorage.app",
-      messagingSenderId: "1019647938747",
-      appId: "1:1019647938747:web:5e2bf5f8f8b6fa11d7599e",
-      measurementId: "G-WB4MVXMLSH"
-    };
+<!-- Chat -->
+<div class="chat-toggle" onclick="toggleChat()">💬 Messages</div>
+<div class="chat-box" id="chatBox" style="display:none;">
+  <div class="chat-header">
+    <span>Messages</span>
+    <button onclick="toggleChat()">×</button>
+  </div>
+  <div class="chat-messages">
+    <div class="message">
+      <strong>Investor Alex:</strong>
+      <p>Hi! Let's connect about your pitch.</p>
+    </div>
+    <div class="message me">
+      <strong>You:</strong>
+      <p>Sounds great! When are you available?</p>
+    </div>
+  </div>
+  <form class="chat-input" onsubmit="sendMessage(event)">
+    <input type="text" id="chatInput" placeholder="Type a message..." />
+    <button type="submit">Send</button>
+  </form>
+</div>
 
-    // initialize app and get firestore instance
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+<!-- NDA Modal -->
+<div id="ndaModal" class="modal">
+  <div class="modal-content">
+    <h3>Non-Disclosure Agreement</h3>
+    <hr style="border: 2px solid #333; width: 80%; margin: 20px auto;">
+    <div style="text-align: left;">
+      <p><b>Please read the following statement carefully and acknowledge that you have read and approved it by providing your details below.</b></p>
+      <p>By proceeding, you agree not to copy, share, or distribute any part of this pitch without explicit permission from the entrepreneur.</p>
+      <p><b>NB:</b> An e-Signature is the electronic equivalent of a handwritten signature. Individuals who fail to comply may be held legally liable.</p>
+      <p>Enter your full name and surname</p>
+      <input type="text" class="large-textbox" placeholder="Type your name here">
+      <p>Do you accept the terms of this NDA?</p>
+    </div>
+    <div class="modal-actions">
+      <button id="acceptNDA" class="btn">I Accept</button>
+      <button id="declineNDA" class="btn secondary">Cancel</button>
+    </div>
+  </div>
+</div>
 
-    // get DOM elements
-    const pitchGrid = document.getElementById("pitchGrid");
-    const ndaModal = document.getElementById("ndaModal");
-    const acceptBtn = document.getElementById("acceptNDA");
-    const declineBtn = document.getElementById("declineNDA");
+<!-- Load your unified Firebase/app logic (NO inline imports here) -->
+<script type="module" src="script.js"></script>
 
-    let selectedPitchId = null; // to keep track of clicked pitch
-
-    // load and display pitches from Firestore
-    async function loadPitches() {
-      const q = query(collection(db, "testPitches"), orderBy("timestamp", "desc"));
-      const snapshot = await getDocs(q);
-
-      if (snapshot.empty) {
-        pitchGrid.innerHTML = "<p>No pitches submitted yet.</p>";
-        return;
-      }
-
-      // loop through each pitch document
-      snapshot.forEach(doc => {
-        const pitch = doc.data();
-        const pitchId = doc.id;
-
-        // create card for each pitch
-        const card = document.createElement("div");
-        card.classList.add("idea-card");
-        card.innerHTML = `
-          <h3>${pitch.title ?? "Untitled Pitch"}</h3>
-          <p><strong>Description:</strong> ${pitch.description ?? "No description provided."}</p>
-          <p><strong>Financial Projections:</strong> ${pitch.financialProjections ?? "N/A"}</p>
-          
-          <a href="#" class="btn view-pitch-btn" data-pitch-id="${pitchId}">View Pitch</a>
-        `;
-
-        pitchGrid.appendChild(card);
-      });
-
-      // attach NDA modal trigger to view buttons
-      document.querySelectorAll(".view-pitch-btn").forEach(btn => {
-        btn.addEventListener("click", e => {
-          e.preventDefault();
-          selectedPitchId = btn.getAttribute("data-pitch-id");
-          ndaModal.style.display = "flex";
-        });
-      });
+<!-- Small chat helpers (non-module is fine) -->
+<script>
+  function toggleChat() {
+    const chatBox = document.getElementById('chatBox');
+    chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
+  }
+  function sendMessage(e) {
+    e.preventDefault();
+    const input = document.getElementById('chatInput');
+    const messageText = input.value.trim();
+    if (messageText !== '') {
+      const chatMessages = document.querySelector('.chat-messages');
+      const newMessage = document.createElement('div');
+      newMessage.classList.add('message', 'me');
+      newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
+      chatMessages.appendChild(newMessage);
+      input.value = '';
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-
-    // handle user accepting NDA
-    acceptBtn.addEventListener("click", () => {
-      ndaModal.style.display = "none";
-      // redirect to pitch details page with pitch ID as parameter
-      window.location.href = `pitch-details.html?id=${selectedPitchId}`;
-    });
-
-    // handle user declining NDA
-    declineBtn.addEventListener("click", () => {
-      ndaModal.style.display = "none";
-      selectedPitchId = null;
-    });
-
-    // load pitches when page is ready
-    document.addEventListener("DOMContentLoaded", loadPitches);
-  </script>
-
-  <!-- ====== CHAT + LOGOUT FUNCTIONS ====== -->
-  <script>
-    // toggles visibility of chat box
-    function toggleChat() {
-      const chatBox = document.getElementById('chatBox');
-      chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
-    }
-
-    // handles sending a chat message
-    function sendMessage(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const messageText = input.value.trim();
-      if (messageText !== '') {
-        const chatMessages = document.querySelector('.chat-messages');
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message', 'me');
-        newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
-        chatMessages.appendChild(newMessage);
-        input.value = '';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }
-
-    // logs the user out and redirects to homepage
-    function logout() {
-      localStorage.removeItem("sizaUser");
-      window.location.href = "home.html";
-    }
-  </script>
-
+  }
+</script>
 </body>
 </html>

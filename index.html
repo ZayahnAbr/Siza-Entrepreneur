@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Siza Innovator</title>
+  <link rel="stylesheet" href="style.css"/>
+<style>
+  /* Header (keeps your color theme) */
+  header {
+    background: #156079;
+    color: #fff;
+    padding: 0.75rem 0;
+  }
+
+  .header-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    flex-wrap:wrap; /* allow brand + nav to wrap on small screens */
+  }
+
+  .brand {
+    font-weight:800;
+    color:#fff;
+    text-decoration:none;
+    line-height:1;
+    white-space:nowrap; /* stops the word from breaking */
+  }
+
+  /* NAV LAYOUT */
+  .site-nav {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    flex:1 1 auto;         /* nav can shrink/grow */
+    min-width:300px;       /* prevents ultra-squish */
+  }
+
+  .site-nav ul {
+    display:flex;
+    list-style:none;
+    gap:0.85rem;
+    margin:0;
+    padding:0;
+    align-items:center;
+    flex-wrap:nowrap;      /* important: prevent random wrapping on desktop */
+  }
+
+  .site-nav .left { flex-wrap:nowrap; }
+  .site-nav .right { flex-wrap:nowrap; }
+
+  .site-nav a {
+    color:#fff;
+    text-decoration:none;
+    font-weight:500;
+    padding:.25rem .3rem;  /* click-target without making rows taller */
+    transition:color .2s ease, opacity .2s ease;
+    line-height:1.2;
+    display:inline-block;
+  }
+
+  .site-nav a:hover { color:#00b4d8; }
+  .site-nav a.active { border-bottom:2px solid #00b4d8; }
+
+  .nav-avatar {
+    width:32px; height:32px; border-radius:50%; object-fit:cover;
+    display:none; margin-left:.25rem; border:2px solid rgba(255,255,255,.25);
+  }
+
+  /* SMALL SCREENS — stack nav neatly under brand */
+  @media (max-width: 900px) {
+    .header-row { row-gap:.5rem; }
+    .site-nav {
+      flex-basis:100%;
+      order:2;
+      flex-direction:column;
+      align-items:flex-start;  /* left align lists */
+      gap:.5rem;
+    }
+    .site-nav ul {
+      flex-wrap:wrap;          /* allow wrapping on small screens only */
+      gap:.6rem .9rem;
+    }
+    .site-nav .right { margin-left:0; }
+  }
+
+  /* Auth cards (kept from your version) */
+  .auth-grid {
+    display:grid;
+    gap:2rem;
+    grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+    margin-top:2rem;
+  }
+  form.card {
+    background:#fff;
+    padding:1.5rem;
+    border-radius:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  }
+  form.card h3 {
+    margin:0 0 1rem;
+    font-size:1.2rem;
+    color:#0d1b2a;
+  }
+  form.card label {
+    display:block;
+    margin:.75rem 0 .25rem;
+    font-size:.9rem;
+    color:#333;
+  }
+  form.card input, form.card select {
+    width:100%;
+    padding:.6rem;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:.95rem;
+  }
+  form.card button {
+    margin-top:1rem;
+    width:100%;
+    padding:.75rem;
+    border:0;
+    border-radius:6px;
+    background:#00b4d8;
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .2s ease;
+  }
+  form.card button:hover { background:#0096c7; }
+  #googleSignInBtn { background:#fff; color:#444; border:1px solid #ccc; }
+  #googleSignInBtn:hover { background:#f8f8f8; }
+</style>
+
+</head>
+<body>
+
+  <!-- FIXED: Put nav inside header so your header styles apply -->
+<header>
+  <div class="container header-row">
+    <a class="brand" href="index.html">Siza Innovator</a>
+
+    <nav class="site-nav">
+      <ul class="left">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="messages.html">Messages</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="forum.html">Forum</a></li>
+        <li><a href="deal-room.html">Deal Room</a></li>
+      </ul>
+
+      <ul class="right">
+        <!-- shown when NOT logged in -->
+        <li id="nav-login"><a href="#auth">Log in</a></li>
+
+        <!-- shown when logged in (script.js fills hrefs and shows them) -->
+        <li><a id="nav-dashboard" style="display:none;">My Dashboard</a></li>
+        <li><a id="nav-profile"  style="display:none;">My Profile</a></li>
+        <li><a id="nav-edit"     style="display:none;">Edit Profile</a></li>
+        <li><a id="nav-logout"   href="#" style="display:none;">Log out</a></li>
+        <li>
+          <img id="navAvatar" class="nav-avatar" alt="User avatar"
+               style="display:none;width:32px;height:32px;border-radius:50%;object-fit:cover;margin-left:.5rem;">
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+  <section class="hero">
+    <div class="container">
+      <h2>Empowering Entrepreneurs. Connecting Investors.</h2>
+      <p>Your idea deserves to be heard — pitch it, fund it, grow it.</p>
+      <a href="#auth" class="btn">Get Started</a>
+    </div>
+  </section>
+
+  <!-- AUTH SECTION -->
+  <section id="auth" class="container" style="margin: 2rem auto; max-width: 1100px;">
+    <div class="auth-grid">
+      <!-- LOGIN -->
+      <form id="loginForm" class="card" autocomplete="on">
+        <h3>Log in</h3>
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" type="email" placeholder="you@example.com" required autocomplete="username email" />
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" placeholder="••••••••" required autocomplete="current-password" />
+        <button type="submit" class="btn">Log in</button>
+        <button type="button" id="googleSignInBtn">Continue with Google</button>
+      </form>
+
+      <!-- SIGN UP -->
+      <form id="signupForm" class="card" autocomplete="on">
+        <h3>Create account</h3>
+        <label for="signupName">Full name</label>
+        <input id="signupName" type="text" placeholder="Your name" required autocomplete="name" />
+        <label for="signupEmail">Email</label>
+        <input id="signupEmail" type="email" placeholder="you@example.com" required autocomplete="email" />
+        <label for="signupPassword">Password</label>
+        <input id="signupPassword" type="password" placeholder="Min 6 characters" required autocomplete="new-password" />
+        <label for="accountType">Account type</label>
+        <select id="accountType" required>
+          <option value="" disabled selected>Choose one</option>
+          <option value="entrepreneur">Entrepreneur</option>
+          <option value="investor">Investor</option>
+        </select>
+        <button type="submit" class="btn">Sign up</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Firebase app -->
+<script type="module" src="script.js"></script>
+</body>
+</html>

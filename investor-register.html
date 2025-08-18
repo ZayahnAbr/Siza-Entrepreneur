@@ -7,33 +7,31 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body>
-  <header>
-    <div class="container">
-      <h1>Siza Investor</h1>
-      <nav>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="messages.html">Messages</a></li>
-          <li><a href="resources.html">Resources</a></li>
-          <li><a href="events.html">Events</a></li>
-          <li><a href="forum.html">Forum</a></li>
-          <li><a href="#" onclick="logout()">Logout</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<header>
+  <div class="container">
+    <h1>Siza Innovator</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
 
   <section class="entrepreneur-register">
-    <form id="entrepreneurRegisterForm">
-      <label for="name">Full Name</label>
-      <input type="text" id="name" name="name" required />
+    <!-- ✅ Form ID matches script.js signup listener -->
+    <form id="signupForm">
+      <label for="signupName">Full Name</label>
+      <input type="text" id="signupName" name="name" required />
 
-      <label for="email">Email Address</label>
-      <input type="email" id="email" name="email" required />
+      <label for="signupEmail">Email Address</label>
+      <input type="email" id="signupEmail" name="email" required />
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required minlength="6" />
+      <label for="signupPassword">Password</label>
+      <input type="password" id="signupPassword" name="password" required minlength="6" />
 
       <!-- Hidden account type -->
       <input type="hidden" id="accountType" name="accountType" value="investor" />

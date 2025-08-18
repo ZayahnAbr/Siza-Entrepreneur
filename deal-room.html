@@ -8,112 +8,51 @@
 </head>
 <body>
 
-  <header>
-    <div class="container">
-      <h1>Siza Innovator</h1>
-      <nav>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="messages.html">Messages</a></li>
-          <li><a href="resources.html">Resources</a></li>
-          <li><a href="events.html">Events</a></li>
-          <li><a href="forum.html">Forum</a></li>
-          <li><a href="#">Logout</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-  <section class="dashboard-section">
-    <div class="container">
-      <h2>Deal Room</h2>
-      <p>Negotiate terms, share files, and schedule meetings with entrepreneurs here.</p>
-
-      <div class="card-grid">
-
-        <div class="idea-card">
-          <h3>SolarBloom — Sindiso Moyo</h3>
-          <p>📅 Scheduled: 6 June 2025, 4PM</p>
-          <p>🔗 <a href="https://teams.microsoft.com/meeting-link-example" target="_blank">Join Microsoft Teams Call</a></p>
-          <button class="btn">Upload NDA</button>
-        </div>
-
-        <div class="idea-card">
-          <h3>MedLink — Ayanda K</h3>
-          <p>📅 Not Scheduled</p>
-          <form onsubmit="scheduleCall(event)">
-            <label for="callDate">Propose Date & Time:</label>
-            <input type="datetime-local" id="callDate" required />
-            <button type="submit" class="btn">Send Invite</button>
-          </form>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
-    </div>
-  </footer>
-
-    <!-- chat popup html -->
-  <div class="chat-toggle" onclick="toggleChat()">
-    💬 Messages
+<header>
+  <div class="container">
+    <h1>Siza Innovator</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="messages.html">Messages</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="forum.html">Forum</a></li>
+        <li><a href="deal-room.html">Deal Room</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </nav>
   </div>
+</header>
 
-  <div class="chat-box" id="chatBox">
-    <div class="chat-header">
-      <span>Messages</span>
-      <button onclick="toggleChat()">×</button>
+<section class="container" style="padding:2rem 0;">
+  <h2>Deal Room (Beta)</h2>
+  <p>Start a video call and share the Room ID with the other person, or join an existing room.</p>
+
+  <div style="display:grid; gap:1rem; grid-template-columns: 1fr; max-width:900px;">
+    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+      <button id="btnCreate" class="btn">Create Room</button>
+      <input id="roomId" type="text" placeholder="Room ID" style="flex:1; min-width:220px; padding:.6rem; border:1px solid #ccc; border-radius:6px;" />
+      <button id="btnJoin" class="btn">Join Room</button>
+      <button id="btnHangup" class="btn" style="background:#ef4444; color:#fff;">Hang Up</button>
+      <button id="btnShare" class="btn" title="Share your screen (optional)">Share Screen</button>
     </div>
-    <div class="chat-messages">
-      <div class="message">
-        <strong>Investor Alex:</strong>
-        <p>Hi! Let's connect about your pitch.</p>
+
+    <div style="display:grid; gap:1rem; grid-template-columns: 1fr 1fr;">
+      <div class="card">
+        <h3 style="margin-bottom:.5rem;">You</h3>
+        <video id="localVideo" playsinline autoplay muted style="width:100%; background:#000; border-radius:8px;"></video>
       </div>
-        <div class="message me">
-        <strong>You:</strong>
-        <p>Sounds great! When are you available?</p>
+      <div class="card">
+        <h3 style="margin-bottom:.5rem;">Partner</h3>
+        <video id="remoteVideo" playsinline autoplay style="width:100%; background:#000; border-radius:8px;"></video>
       </div>
     </div>
-    <form class="chat-input" onsubmit="sendMessage(event)">
-      <input type="text" id="chatInput" placeholder="Type a message..." />
-      <button type="submit">Send</button>
-    </form>
+
+    <small id="roomHint" style="color:#555;"></small>
   </div>
+</section>
 
-  <!-- chat script -->
-  <script>
-    function toggleChat() {
-      const chatBox = document.getElementById('chatBox');
-      chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
-    }
+<!-- Make sure your global script is loaded as module so Firebase imports work -->
+<script type="module" src="script.js"></script>
 
-    function sendMessage(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const messageText = input.value.trim();
-      if (messageText !== '') {
-        const chatMessages = document.querySelector('.chat-messages');
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message', 'me');
-        newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
-        chatMessages.appendChild(newMessage);
-        input.value = '';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }
-  </script>
-
-  <script>
-    function scheduleCall(event) {
-      event.preventDefault();
-      const callDate = document.getElementById("callDate").value;
-      alert("Call invite sent for: " + new Date(callDate).toLocaleString());
-    }
-  </script>
-
-</body>
-</html>

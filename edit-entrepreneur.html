@@ -3,135 +3,124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Siza Innovator - Entrepreneur Profile</title>
+  <title>Siza Innovator – Edit Entrepreneur Profile</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
-
 <body>
-  <header>
-    <div class="container">
-      <h1>Siza Innovator</h1>
-      <nav>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="messages.html">Messages</a></li>
-          <li><a href="resources.html">Resources</a></li>
-          <li><a href="events.html">Events</a></li>
-          <li><a href="forum.html">Forum</a></li>
-          <li><a href="#" id="logoutBtn">Logout</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
 
-  <section class="profile-section">
-    <div class="container">
-      <div class="profile-header">
-        <img src="" alt="Profile Picture" class="profile-img" id="profileImg">
-        <div>
-          <h2 id="profileName"></h2>
-          <p id="profileTitle"></p>
+ <header>
+  <div class="container header-row">
+    <a class="brand" href="index.html">Siza Innovator</a>
+
+    <nav class="site-nav">
+      <ul class="left">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="messages.html">Messages</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="forum.html">Forum</a></li>
+        <li><a href="deal-room.html">Deal Room</a></li>
+      </ul>
+
+      <ul class="right">
+        <!-- shown when NOT logged in -->
+        <li id="nav-login"><a href="#auth">Log in</a></li>
+
+        <!-- shown when logged in (script.js fills hrefs and shows them) -->
+        <li><a id="nav-dashboard" style="display:none;">My Dashboard</a></li>
+        <li><a id="nav-profile"  style="display:none;">My Profile</a></li>
+        <li><a id="nav-edit"     style="display:none;">Edit Profile</a></li>
+        <li><a id="nav-logout"   href="#" style="display:none;">Log out</a></li>
+        <li>
+          <img id="navAvatar" class="nav-avatar" alt="User avatar"
+               style="display:none;width:32px;height:32px;border-radius:50%;object-fit:cover;margin-left:.5rem;">
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+  <!-- Edit Form -->
+  <section class="form-section">
+    <div class="container" style="max-width:900px;">
+      <h2>Entrepreneur Profile</h2>
+      <p>Tell investors about you and your venture. Upload a profile image, your pitch deck and (optionally) a short pitch video. Saving will mark your profile as complete and send you to the finish screen.</p>
+
+      <form id="editEntrepreneurForm" class="card" style="margin-top:1rem;">
+        <!-- Profile Picture preview -->
+        <div class="profile-pic-preview">
+          <img id="entProfilePreview" src="" alt="Profile Preview" />
         </div>
-      </div>
 
-      <div class="profile-content">
-        <h3>My Business Idea</h3>
-        <p id="profileIdea"></p>
+        <label for="entProfilePic">Profile Picture</label>
+        <input id="entProfilePic" type="file" accept="image/*" />
 
-        <h3>Pitch Video</h3>
-        <video controls width="100%" id="profileVideo">
-          <source src="" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
+        <label for="entName">Full Name</label>
+        <input id="entName" type="text" placeholder="Your full name" required />
 
-        <h3>Documents</h3>
-        <ul id="profileDocs"></ul>
-      </div>
+        <label for="entBio">Bio</label>
+        <textarea id="entBio" rows="4" placeholder="Who you are and what you’re building" required></textarea>
+
+        <div class="filter-bar">
+          <div style="flex:1; min-width:220px;">
+            <label for="entIndustry">Industry</label>
+            <select id="entIndustry" required>
+              <option value="" disabled selected>Select industry</option>
+              <option value="Fintech">Fintech</option>
+              <option value="Health">Health</option>
+              <option value="Education">Education</option>
+              <option value="Energy">Energy</option>
+              <option value="E-commerce">E-commerce</option>
+              <option value="Agriculture">Agriculture</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div style="flex:1; min-width:220px;">
+            <label for="entLocation">Location</label>
+            <input id="entLocation" type="text" placeholder="City, Country" required />
+          </div>
+        </div>
+
+        <label for="entWebsite">Website (optional)</label>
+        <input id="entWebsite" type="url" placeholder="https://yourstartup.com" />
+
+        <hr style="margin:1.25rem 0; border:none; border-top:1px solid #eee;" />
+
+        <h3 style="margin:0 0 .5rem;">Pitch Details</h3>
+
+        <label for="entPitchTitle">Pitch Title</label>
+        <input id="entPitchTitle" type="text" placeholder="e.g., Affordable Solar Storage for Rural Homes" required />
+
+        <label for="entFundingGoal">Funding Goal </label>
+        <input id="entFundingGoal" type="number" min="0" step="100" placeholder="50000" required />
+
+        <div class="filter-bar">
+          <div style="flex:1; min-width:220px;">
+            <label for="entPitchDeck">Pitch Deck (PDF/PPT)</label>
+            <input id="entPitchDeck" type="file" accept=".pdf,.ppt,.pptx" />
+          </div>
+          <div style="flex:1; min-width:220px;">
+            <label for="entPitchVideo">Pitch Video (optional)</label>
+            <input id="entPitchVideo" type="file" accept="video/*" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn" style="margin-top:1rem;">Save Profile</button>
+        <p style="margin-top:.75rem; color:#666; font-size:.95rem;">
+          After saving, you’ll be taken to the <strong>Profile Complete</strong> page and can proceed to your dashboard.
+        </p>
+      </form>
     </div>
   </section>
 
-   <!-- footer -->
   <footer>
     <div class="container">
       <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- chat popup html -->
-  <div class="chat-toggle" onclick="toggleChat()">
-    💬 Messages
-  </div>
-
-  <div class="chat-box" id="chatBox">
-    <div class="chat-header">
-      <span>Messages</span>
-      <button onclick="toggleChat()">×</button>
-    </div>
-    <div class="chat-messages" id="chatMessages">
-      <!-- Messages will appear here dynamically -->
-    </div>
-    <form class="chat-input" onsubmit="sendMessage(event)">
-      <input type="text" id="chatInput" placeholder="Type a message..." />
-      <button type="submit">Send</button>
-    </form>
-  </div>
-
-  <script>
-    // fetch user data from localStorage
-    const userData = JSON.parse(localStorage.getItem('sizaUser')) || {};
-
-    // fill profile dynamically
-    document.getElementById('profileName').textContent = userData.name || "Entrepreneur";
-    document.getElementById('profileTitle').textContent = userData.location || "Location not set";
-    document.getElementById('profileIdea').textContent = userData.businessIdea || "No business idea added yet.";
-    
-    const profileImg = document.getElementById('profileImg');
-    profileImg.src = userData.profilePic || 'https://via.placeholder.com/150';
-    
-    const profileVideo = document.getElementById('profileVideo').querySelector('source');
-    profileVideo.src = userData.pitchVideo || '';
-    document.getElementById('profileVideo').load();
-
-    const profileDocs = document.getElementById('profileDocs');
-    if (userData.documents && userData.documents.length > 0) {
-      userData.documents.forEach(doc => {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = doc.url;
-        a.textContent = doc.name;
-        li.appendChild(a);
-        profileDocs.appendChild(li);
-      });
-    } else {
-      profileDocs.innerHTML = "<li>No documents uploaded.</li>";
-    }
-
-    // logout
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('sizaUser');
-      window.location.href = "login.html";
-    });
-
-    // chat
-    function toggleChat() {
-      const chatBox = document.getElementById('chatBox');
-      chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function sendMessage(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const messageText = input.value.trim();
-      if (messageText !== '') {
-        const chatMessages = document.getElementById('chatMessages');
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message', 'me');
-        newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
-        chatMessages.appendChild(newMessage);
-        input.value = '';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }
-  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

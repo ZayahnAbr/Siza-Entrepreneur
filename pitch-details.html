@@ -3,212 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pitch Details - Siza Innovator</title>
+  <title>Siza Innovator - Pitch Details</title>
   <link rel="stylesheet" href="style.css"/>
-
-  <style>
-    .container {
-      width: 90%;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    .pitch-card {
-      background: white;
-      margin: 2rem auto;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-
-    .entrepreneur-header {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .entrepreneur-header img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #ccc;
-    }
-
-    .entrepreneur-header h2 {
-      font-size: 2rem;
-      font-weight: bold;
-      margin: 0;
-      color: #0f4c81;
-    }
-
-    .pitch-detail {
-      margin-bottom: 1.2rem;
-    }
-
-    .pitch-detail strong {
-      display: block;
-      color: #333;
-      font-weight: 600;
-      margin-bottom: 0.2rem;
-    }
-
-    .pitch-detail span {
-      color: #444;
-      font-size: 1.05rem;
-    }
-  </style>
 </head>
-
 <body>
-  <!-- header nav -->
-  <header>
-    <div class="container">
-      <h1>Siza Innovator</h1>
-      <nav>
-        <ul>
-          <li><a href="investor-dashboard.html">Dashboard</a></li>
-          <li><a href="messages.html">Messages</a></li>
-          <li><a href="resources.html">Resources</a></li>
-          <li><a href="events.html">Events</a></li>
-          <li><a href="forum.html">Forum</a></li>
-          <li><a href="#" onclick="logout()">Logout</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
 
-  <!-- pitch details section -->
-  <section class="pitch-card container" id="pitchDetails">
+<header>
+  <div class="container header-row">
+    <a class="brand" href="index.html">Siza Innovator</a>
 
-    <!-- entrepreneur profile section -->
-    <div class="entrepreneur-header">
-      <img src="profile-pic.jpg" alt="Entrepreneur Profile Picture" />
-      <h2 id="author">Entrepreneur</h2>
-    </div>
+    <nav class="site-nav">
+      <ul class="left">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="messages.html">Messages</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="forum.html">Forum</a></li>
+        <li><a href="deal-room.html">Deal Room</a></li>
+      </ul>
 
-    <h3 id="pitchTitle">Loading pitch...</h3>
+      <ul class="right">
+        <!-- shown when NOT logged in -->
+        <li id="nav-login"><a href="#auth">Log in</a></li>
 
-    <div class="pitch-detail">
-      <strong>Description:</strong>
-      <span id="pitchDescription"></span>
-    </div>
-
-    <div class="pitch-detail">
-      <strong>Financial Projections:</strong>
-      <span id="financialProjections"></span>
-    </div>
-    <div class="pitch-actions">
-  <button class="btn" id="sendMessageBtn">Message</button>
-  <button class="btn secondary" id="requestDealRoomBtn">Request Meeting</button>
-</div>
-
-  </section>
-
-  <!-- footer -->
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <!-- chat popup html -->
-  <div class="chat-toggle" onclick="toggleChat()">💬 Messages</div>
-
-  <div class="chat-box" id="chatBox">
-    <div class="chat-header">
-      <span>Messages</span>
-      <button onclick="toggleChat()">×</button>
-    </div>
-    <div class="chat-messages">
-      <div class="message">
-        <strong>Investor Alex:</strong>
-        <p>Hi! Let's connect about your pitch.</p>
-      </div>
-      <div class="message me">
-        <strong>You:</strong>
-        <p>Sounds great! When are you available?</p>
-      </div>
-    </div>
-    <form class="chat-input" onsubmit="sendMessage(event)">
-      <input type="text" id="chatInput" placeholder="Type a message..." />
-      <button type="submit">Send</button>
-    </form>
+        <!-- shown when logged in (script.js fills hrefs and shows them) -->
+        <li><a id="nav-dashboard" style="display:none;">My Dashboard</a></li>
+        <li><a id="nav-profile"  style="display:none;">My Profile</a></li>
+        <li><a id="nav-edit"     style="display:none;">Edit Profile</a></li>
+        <li><a id="nav-logout"   href="#" style="display:none;">Log out</a></li>
+        <li>
+          <img id="navAvatar" class="nav-avatar" alt="User avatar"
+               style="display:none;width:32px;height:32px;border-radius:50%;object-fit:cover;margin-left:.5rem;">
+        </li>
+      </ul>
+    </nav>
   </div>
+</header>
 
-  <!-- chat + logout script -->
-  <script>
-    function toggleChat() {
-      const chatBox = document.getElementById('chatBox');
-      chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
-    }
 
-    function sendMessage(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const messageText = input.value.trim();
-      if (messageText !== '') {
-        const chatMessages = document.querySelector('.chat-messages');
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message', 'me');
-        newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
-        chatMessages.appendChild(newMessage);
-        input.value = '';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }
+<section class="container" style="padding:2rem 0;">
+  <div class="card" style="padding:1.5rem;">
+    <h2 id="pdTitle">Loading…</h2>
+    <p><strong>Entrepreneur:</strong> <span id="pdAuthor">—</span> <strong>Email:</strong> <span id="pdEmail">—</span></p>
 
-    function logout() {
-      localStorage.removeItem("sizaUser");
-      window.location.href = "home.html";
-    }
-  </script>
+    <h3 style="margin-top:1.5rem;">Overview</h3>
+    <p id="pdDesc">—</p>
 
-  <!-- firebase logic -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem;">
+      <div class="card">
+        <strong>Industry</strong>
+        <div id="pdIndustry">—</div>
+      </div>
+      <div class="card">
+        <strong>Funding Goal</strong>
+        <div id="pdFunding">—</div>
+      </div>
+      <div class="card">
+        <strong>Financial Projections</strong>
+        <div id="pdProjections">—</div>
+      </div>
+    </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
-      authDomain: "siza-platform.firebaseapp.com",
-      projectId: "siza-platform",
-      storageBucket: "siza-platform.firebasestorage.app",
-      messagingSenderId: "1019647938747",
-      appId: "1:1019647938747:web:5e2bf5f8f8b6fa11d7599e",
-      measurementId: "G-WB4MVXMLSH"
-    };
+    <div style="margin-top:1.5rem;">
+      <strong>Pitch Deck:</strong> <span id="pdDeck">—</span>
+    </div>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    <div id="pdVideoWrap" style="margin-top:1.5rem;display:none;">
+      <h3>Pitch Video</h3>
+      <video controls width="100%">
+        <source id="pdVideoSrc" src="" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
 
-    async function loadPitch() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const pitchId = urlParams.get("id");
+    <div style="margin-top:1.5rem;">
+      <a class="btn" href="investor-dashboard.html">Back to Dashboard</a>
+    </div>
+  </div>
+</section>
 
-      if (!pitchId) {
-        document.getElementById("pitchDetails").innerHTML = "<p>No pitch ID provided in URL.</p>";
-        return;
-      }
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
+  </div>
+</footer>
 
-      const docRef = doc(db, "testPitches", pitchId);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const pitch = docSnap.data();
-        document.getElementById("pitchTitle").textContent = pitch.title || "Untitled Pitch";
-        document.getElementById("pitchDescription").textContent = pitch.description || "No description provided.";
-        document.getElementById("financialProjections").textContent = pitch.financialProjections || "N/A";
-        document.getElementById("author").textContent = pitch.author || "Unknown";
-      } else {
-        document.getElementById("pitchDetails").innerHTML = "<p>Pitch not found.</p>";
-      }
-    }
-
-    window.addEventListener("DOMContentLoaded", loadPitch);
-  </script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
-
-

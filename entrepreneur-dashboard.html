@@ -5,236 +5,169 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Entrepreneur Dashboard - Siza Innovator</title>
   <link rel="stylesheet" href="style.css" />
-  <!-- firebase scripts will be imported as module below -->
 </head>
-
 <body>
-  <header>
-    <div class="container">
-      <h1>Siza Entrepreneur</h1>
-      <nav>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="messages.html">Messages</a></li>
-          <li><a href="resources.html">Resources</a></li>
-          <li><a href="events.html">Events</a></li>
-          <li><a href="forum.html">Forum</a></li>
-          <li><a href="#" onclick="logout()">Logout</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
 
+<header>
+  <div class="container header-row">
+    <a class="brand" href="index.html">Siza Innovator</a>
+
+    <nav class="site-nav">
+      <ul class="left">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="messages.html">Messages</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="forum.html">Forum</a></li>
+        <li><a href="deal-room.html">Deal Room</a></li>
+      </ul>
+
+      <ul class="right">
+        <!-- shown when NOT logged in -->
+        <li id="nav-login"><a href="#auth">Log in</a></li>
+
+        <!-- shown when logged in (script.js fills hrefs and shows them) -->
+        <li><a id="nav-dashboard" style="display:none;">My Dashboard</a></li>
+        <li><a id="nav-profile"  style="display:none;">My Profile</a></li>
+        <li><a id="nav-edit"     style="display:none;">Edit Profile</a></li>
+        <li><a id="nav-logout"   href="#" style="display:none;">Log out</a></li>
+        <li>
+          <img id="navAvatar" class="nav-avatar" alt="User avatar"
+               style="display:none;width:32px;height:32px;border-radius:50%;object-fit:cover;margin-left:.5rem;">
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+<main>
   <section class="dashboard-section">
     <div class="container">
-      <img src="https://th.bing.com/th/id/OIP.Ghae4OEdb4UmC3hkqpFvLAHaGd?rs=1&pid=ImgDetMain" alt="Profile Picture" class="profile-img">
+      <img id="profilePic" src="" alt="Profile Picture" class="profile-img">
       <h2>Welcome back, <span id="username">User</span> 👋</h2>
 
- <!-- ===== PITCH SUBMISSION FORM ===== -->
+      <!-- ===== PITCH SUBMISSION FORM ===== -->
       <div class="idea-card">
         <h3>Submit a New Pitch</h3>
         <form id="pitchForm">
-          <!-- Input for business name -->
           <input type="text" id="pitchTitle" placeholder="Business Name" required /><br />
-
-          <!-- Short summary pitch for investors -->
           <textarea id="shortPitch" placeholder="Short Pitch (shown to investors)" required maxlength="200"></textarea><br />
-
-          <!-- Full pitch description, under NDA -->
           <textarea id="pitchDescription" placeholder="Long Pitch / Description (NDA required)" required></textarea><br />
-
-          <!-- Financial information, also under NDA -->
           <textarea id="financialProjections" placeholder="Financial Projections (NDA required)" required></textarea><br />
 
-          <!-- Optional image upload -->
           <label for="pitchImage">Upload an image (optional):</label><br />
           <input type="file" id="pitchImage" accept="image/*" /><br />
           <img id="pitchImagePreview" src="" alt="Image preview" style="max-width: 300px; margin-top: 10px; display: none;" /><br />
 
-          <!-- Optional video upload -->
           <label for="pitchVideo">Upload a video (optional):</label><br />
           <input type="file" id="pitchVideo" accept="video/*" /><br />
           <video id="pitchVideoPreview" controls style="max-width: 300px; margin-top: 10px; display: none;"></video><br />
 
-          <!-- Submit button -->
           <button type="submit" class="btn">Submit Pitch</button>
         </form>
       </div>
 
-      <!-- ===== COMMUNITY POST FEED ===== -->
+      <!-- ===== COMMUNITY FEED ===== -->
       <h2>Community Feed</h2>
-
-      <!-- Form for posting public messages to the community -->
-      <form class="post-form" onsubmit="addPost(event)">
-        <label for="new-post">Share something with the community</label>
+      <form class="post-form" id="postForm">
         <textarea id="new-post" rows="4" placeholder="What's on your mind?" required></textarea>
-
         <div class="post-form-bottom">
-          <!-- Upload an image for the post -->
-          <input type="file" id="post-image" accept="image/*" onchange="previewImage(event)" />
+          <input type="file" id="post-image" accept="image/*" />
           <label for="post-image" class="image-upload-label">📷 Add Image</label>
-
-          <!-- Preview of selected image -->
           <div class="post-preview-img">
             <img id="image-preview" src="" alt="" style="display:none;" />
           </div>
-
-          <!-- Post submit button -->
           <button type="submit" class="btn">Post</button>
         </div>
       </form>
 
-      <!-- Hardcoded example of a post -->
-      <div id="post-feed" class="forum-thread">
-        <div class="idea-card post">
-          <strong>Fatima 🇿🇦</strong>
-          <p>Just uploaded my pitch! Nervous but hopeful. Good luck to all of us 💫</p>
-          <div class="post-actions">
-            <button onclick="likePost(this)">❤️ Like</button>
-            <button onclick="replyToPost(this)">💬 Reply</button>
-          </div>
-        </div>
-      </div>
+      <div id="post-feed" class="forum-thread"></div>
     </div>
   </section>
+</main>
 
-  <!-- Page footer -->
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
-    </div>
-  </footer>
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
+  </div>
+</footer>
 
-  <!-- ===== FIREBASE LOGIC (MODULE) ===== -->
-  <script type="module">
-    // Import Firebase services
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+<!-- ===== FIREBASE + AUTH LOGIC ===== -->
+<script type="module">
+import { db, storage, getStoredUser, submitPitch, logout } from './auth.js';
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js";
 
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyB81g5mgAVn3iC9LM2JrM8EkAADsv7RqEo",
-      authDomain: "siza-platform.firebaseapp.com",
-      projectId: "siza-platform",
-      storageBucket: "siza-platform.appspot.com",
-      messagingSenderId: "1019647938747",
-      appId: "1:1019647938747:web:5e2bf5f8f8b6fa11d7599e",
-      measurementId: "G-WB4MVXMLSH",
-    };
+document.addEventListener("DOMContentLoaded", () => {
+  const user = getStoredUser();
+  if (!user) return window.location.href = "login.html";
 
-    // Initialize Firebase app, Firestore and Storage
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
+  // dynamic nav
+  const navUl = document.querySelector("header nav ul");
+  navUl.innerHTML = `
+    <li><a href="${user.accountType === 'investor' ? 'investor-dashboard.html' : 'entrepreneur-dashboard.html'}">Home</a></li>
+    <li><a href="messages.html">Messages</a></li>
+    <li><a href="resources.html">Resources</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="forum.html">Forum</a></li>
+    <li><a href="deal-room.html">Deal Room</a></li>
+    <li><a href="edit-${user.accountType}.html">Profile</a></li>
+    <li><a href="#" id="logoutBtn">Logout</a></li>
+  `;
 
-    // Runs when the page loads
-    document.addEventListener("DOMContentLoaded", () => {
-      const pitchForm = document.getElementById("pitchForm");
-      const imageInput = document.getElementById("pitchImage");
-      const imagePreview = document.getElementById("pitchImagePreview");
-      const videoInput = document.getElementById("pitchVideo");
-      const videoPreview = document.getElementById("pitchVideoPreview");
+  document.getElementById("logoutBtn").addEventListener("click", logout);
 
-      // Show preview of selected image
-      imageInput.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = () => {
-            imagePreview.src = reader.result;
-            imagePreview.style.display = "block";
-          };
-          reader.readAsDataURL(file);
-        } else {
-          imagePreview.src = "";
-          imagePreview.style.display = "none";
-        }
-      });
+  // fill user info
+  document.getElementById("username").textContent = user.name || "User";
+  if(user.profilePic) document.getElementById("profilePic").src = user.profilePic;
 
-      // Show preview of selected video
-      videoInput.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const videoURL = URL.createObjectURL(file);
-          videoPreview.src = videoURL;
-          videoPreview.style.display = "block";
-        } else {
-          videoPreview.src = "";
-          videoPreview.style.display = "none";
-        }
-      });
+  // pitch submission
+  const pitchForm = document.getElementById("pitchForm");
+  const imageInput = document.getElementById("pitchImage");
+  const imagePreview = document.getElementById("pitchImagePreview");
+  const videoInput = document.getElementById("pitchVideo");
+  const videoPreview = document.getElementById("pitchVideoPreview");
 
-      // Handle pitch form submission
-      pitchForm?.addEventListener("submit", async (e) => {
-        e.preventDefault();
+  imageInput.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if(file){
+      const reader = new FileReader();
+      reader.onload = ()=> { imagePreview.src = reader.result; imagePreview.style.display="block"; }
+      reader.readAsDataURL(file);
+    } else { imagePreview.style.display="none"; }
+  });
 
-        // Get form values
-        const title = document.getElementById("pitchTitle").value.trim();
-        const shortPitch = document.getElementById("shortPitch").value.trim();
-        const description = document.getElementById("pitchDescription").value.trim();
-        const financialProjections = document.getElementById("financialProjections").value.trim();
+  videoInput.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if(file){ videoPreview.src = URL.createObjectURL(file); videoPreview.style.display="block"; }
+    else videoPreview.style.display="none";
+  });
 
-        // Validation check
-        if (!title || !shortPitch || !description || !financialProjections) {
-          alert("Please complete all fields.");
-          return;
-        }
+  pitchForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const title = document.getElementById("pitchTitle").value.trim();
+    const shortPitch = document.getElementById("shortPitch").value.trim();
+    const description = document.getElementById("pitchDescription").value.trim();
+    const financialProjections = document.getElementById("financialProjections").value.trim();
+    if(!title || !shortPitch || !description || !financialProjections){ return alert("Fill all fields."); }
 
-        try {
-          let imageUrl = "";
-          let videoUrl = "";
-
-          // Upload image to Firebase Storage if selected
-          if (imageInput.files.length > 0) {
-            const imageFile = imageInput.files[0];
-            const imageRef = ref(storage, `pitchImages/${Date.now()}_${imageFile.name}`);
-            await uploadBytes(imageRef, imageFile);
-            imageUrl = await getDownloadURL(imageRef);
-          }
-
-          // Upload video to Firebase Storage if selected
-          if (videoInput.files.length > 0) {
-            const videoFile = videoInput.files[0];
-            const videoRef = ref(storage, `pitchVideos/${Date.now()}_${videoFile.name}`);
-            await uploadBytes(videoRef, videoFile);
-            videoUrl = await getDownloadURL(videoRef);
-          }
-
-          // Save pitch data to Firestore
-          await addDoc(collection(db, "testPitches"), {
-            title,
-            shortPitch,
-            description,
-            financialProjections,
-            imageUrl,
-            videoUrl,
-            timestamp: serverTimestamp(),
-          });
-
-          // Reset form and previews after successful submission
-          alert(" Pitch submitted successfully!");
-          pitchForm.reset();
-          imagePreview.src = "";
-          imagePreview.style.display = "none";
-          videoPreview.src = "";
-          videoPreview.style.display = "none";
-        } catch (err) {
-          console.error("❌ Error:", err);
-          alert("Error submitting pitch.");
-        }
-      });
-    });
-  </script>
-
-  <!-- ===== LOGOUT FUNCTION ===== -->
-  <script>
-    // Logs the user out by clearing localStorage and redirecting to homepage
-    function logout() {
-      localStorage.removeItem("sizaUser");
-      window.location.href = "home.html";
-    }
-  </script>
+    try{
+      const files = {};
+      if(imageInput.files[0]) files.image = imageInput.files[0];
+      if(videoInput.files[0]) files.video = videoInput.files[0];
+      const pitchData = { title, shortPitch, description, financialProjections };
+      await submitPitch(pitchData, files);
+      alert("Pitch submitted successfully!");
+      pitchForm.reset();
+      imagePreview.style.display="none";
+      videoPreview.style.display="none";
+    }catch(err){ console.error(err); alert("Error submitting pitch."); }
+  });
+});
+</script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
+
 

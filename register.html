@@ -30,26 +30,23 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <div class="container">
-      <h1>Siza Innovator</h1>
-      <nav>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="messages.html">Messages</a></li>
-          <li><a href="resources.html">Resources</a></li>
-          <li><a href="events.html">Events</a></li>
-          <li><a href="forum.html">Forum</a></li>
-          <li><a href="deal-room.html">Deal Room</a></li>
-          <li><a href="entrepreneur-dashboard.html">Entrepreneur dashboard</a></li>
-          <li><a href="investor-dashboard.html">Investor dashboard</a></li>
-          <li><a href="entrepreneur.html">Entrepreneur profile</a></li>
-          <li><a href="investor.html">Investor profile</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<header>
+  <div class="container">
+    <h1>Siza Innovator</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="messages.html">Messages</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="forum.html">Forum</a></li>
+        <li><a href="deal-room.html">Deal Room</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
 
   <!-- Prompt to choose account type -->
  <section class="register-section">
@@ -73,5 +70,24 @@
 
   <!-- Your JS file -->
   <script type="module" src="script.js"></script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const buttons = document.querySelectorAll(".choose-account-buttons a");
+    buttons.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const type = btn.dataset.type;
+        if (type === "entrepreneur") {
+          window.location.href = "entrepreneur-register.html";
+        } else if (type === "investor") {
+          window.location.href = "investor-register.html";
+        }
+      });
+    });
+  });
+</script>
+<script type="module" src="script.js"></script>
+
 </body>
 </html>
