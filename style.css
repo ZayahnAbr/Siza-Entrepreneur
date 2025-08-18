@@ -421,7 +421,13 @@ form input, form select, form textarea {
 @media (max-width: 600px) {
   .profile-header { gap: 1rem; }
 }
+.column {
+      flex: 1; 
+      padding: 20px;
+      box-sizing: border-box;
+    }
 
+<<<<<<< HEAD
 /* === NAV BACKGROUND GLITCH FIX (place at end of style.css) === */
 
 /* Pick ONE header color for all pages */
@@ -510,4 +516,13 @@ header nav, header nav ul, header nav li, header nav a {
 
 /* (optional) button loading */
 .is-loading { opacity:.7; pointer-events:none; }
+=======
+    .left {
+      background-color: #f0f0f0;
+    }
+
+    .right {
+      background-color: #d0e0f0;
+    }
+>>>>>>> d5124e403d307f3a8bc773fb1dd8902b505549c0
 
