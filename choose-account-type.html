@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Choose Account Type - Siza Innovator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <section class="choose-account-section">
+    <h2>Choose Your Account Type</h2>
+    <div class="account-options">
+      <button id="entrepreneurBtn" class="btn">Entrepreneur</button>
+      <button id="investorBtn" class="btn">Investor</button>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById("entrepreneurBtn").addEventListener("click", () => {
+      // Redirect to entrepreneur registration page or form
+      window.location.href = "entrepreneur-register.html";
+    });
+
+    document.getElementById("investorBtn").addEventListener("click", () => {
+      // Redirect to investor registration page or form
+      window.location.href = "investor-register.html";
+    });
+  </script>
+</body>
+</html>

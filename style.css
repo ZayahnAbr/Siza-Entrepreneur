@@ -415,14 +415,238 @@ form textarea {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  background-color: #2771b3;
+  background-color: #0077cc;
   color: white;
   font-weight: bold;
 }
 
-.pitch-actions .btn.secondary {
-  background-color: #555;
+.google-btn {
+  background-color: #0077cc;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+.google-btn:hover {
+  background-color: #2f62b6;
 }
 
 
+.pitch-actions .btn.secondary {
+  background-color: #555;
+}
+.column {
+      flex: 1; 
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .left {
+      background-color: #f0f0f0;
+    }
+
+    .right {
+      background-color: #d0e0f0;
+    }
+
+    /* Register Page Specific Styles */
+.register-section {
+  max-width: 450px;
+  background: white;
+  padding: 2rem;
+  margin: 3rem auto;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.register-section h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #0077cc;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.register-section form label {
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.register-section form input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.register-section form input:focus {
+  border-color: #0077cc;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0,119,204,0.4);
+}
+
+.register-section form button.btn {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #0077cc;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-section form button.btn:hover {
+  background-color: #005fa3;
+}
+
+/* login page specific styles */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to right, #ece9e6, #ffffff);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.login-page .form-container {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-page h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.login-page .form-group {
+  margin-bottom: 1rem;
+}
+
+.login-page .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.login-page .form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-page .submit-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.login-page .submit-button:hover {
+  background-color: #357abd;
+}
+
+.login-page .extra-links {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.login-page .extra-links a {
+  color: #4a90e2;
+  text-decoration: none;
+}
+
+/* Entrepreneur Register Page - Matches .register-section exactly */
+.entrepreneur-register {
+  max-width: 450px;
+  background: white;
+  padding: 2rem;
+  margin: 3rem auto;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.entrepreneur-register h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #0077cc;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.entrepreneur-register form label {
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #333;
+  display: block;
+}
+
+.entrepreneur-register form input,
+.entrepreneur-register form select,
+.entrepreneur-register form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.entrepreneur-register form input:focus,
+.entrepreneur-register form select:focus,
+.entrepreneur-register form textarea:focus {
+  border-color: #0077cc;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0,119,204,0.4);
+}
+
+.entrepreneur-register form button.btn {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #0077cc;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.entrepreneur-register form button.btn:hover {
+  background-color: #005fa3;
+}
+
+ 
+ 
  

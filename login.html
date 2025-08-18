@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Siza Innovator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <h1>Siza Innovator</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="messages.html">Messages</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="deal-room.html">Deal Room</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Login Form -->
+  <section class="register-section">
+    <h2>Log In</h2>
+    <form id="loginForm">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" name="loginEmail" autocomplete="email" required />
+
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" name="loginPassword" autocomplete="current-password" required />
+
+      <button class="btn" type="submit">Log In</button>
+    </form>
+
+    <button id="googleSignInBtn" class="google-btn" type="button">Sign in with Google</button>
+
+    <div class="extra-links" style="text-align: center; margin-top: 1rem;">
+      <p>Don't have an account? <a href="register.html">Register here</a></p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Firebase login logic -->
+  <script type="module" src="script.js"></script>
+</body>
+</html>

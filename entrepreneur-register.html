@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Entrepreneur Dashboard - Siza Innovator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <h1>Siza Entrepreneur</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="messages.html">Messages</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="entrepreneur-register">
+    <form id="entrepreneurRegisterForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required minlength="6" />
+
+      <!-- Optional entrepreneur fields -->
+      <label for="companyName">Company/Startup Name</label>
+      <input type="text" id="companyName" name="companyName" />
+
+      <!-- Hidden account type -->
+      <input type="hidden" id="accountType" name="accountType" value="entrepreneur" />
+
+      <button type="submit" class="btn">Register as Entrepreneur</button>
+    </form>
+  </section>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>

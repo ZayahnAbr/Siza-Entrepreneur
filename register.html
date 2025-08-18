@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register - Siza Innovator</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .choose-account-buttons {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    .choose-account-buttons a {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background-color: #0077cc;
+      color: white;
+      font-weight: 600;
+      border-radius: 25px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: background-color 0.3s ease;
+    }
+    .choose-account-buttons a:hover {
+      background-color: #005fa3;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <h1>Siza Innovator</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="messages.html">Messages</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="deal-room.html">Deal Room</a></li>
+          <li><a href="entrepreneur-dashboard.html">Entrepreneur dashboard</a></li>
+          <li><a href="investor-dashboard.html">Investor dashboard</a></li>
+          <li><a href="entrepreneur.html">Entrepreneur profile</a></li>
+          <li><a href="investor.html">Investor profile</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Prompt to choose account type -->
+ <section class="register-section">
+  <h2>Create an Account</h2>
+  <p>Please choose your account type before registering:</p>
+    <div class="choose-account-buttons">
+  <a href="#" data-type="entrepreneur">Entrepreneur</a>
+  <a href="#" data-type="investor">Investor</a>
+</div>
+
+  </div>
+</section>
+
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Your JS file -->
+  <script type="module" src="script.js"></script>
+</body>
+</html>

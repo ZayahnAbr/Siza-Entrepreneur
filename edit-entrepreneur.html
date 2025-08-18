@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Siza Innovator - Entrepreneur Profile</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <h1>Siza Innovator</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="messages.html">Messages</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="forum.html">Forum</a></li>
+          <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="profile-section">
+    <div class="container">
+      <div class="profile-header">
+        <img src="" alt="Profile Picture" class="profile-img" id="profileImg">
+        <div>
+          <h2 id="profileName"></h2>
+          <p id="profileTitle"></p>
+        </div>
+      </div>
+
+      <div class="profile-content">
+        <h3>My Business Idea</h3>
+        <p id="profileIdea"></p>
+
+        <h3>Pitch Video</h3>
+        <video controls width="100%" id="profileVideo">
+          <source src="" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+
+        <h3>Documents</h3>
+        <ul id="profileDocs"></ul>
+      </div>
+    </div>
+  </section>
+
+   <!-- footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- chat popup html -->
+  <div class="chat-toggle" onclick="toggleChat()">
+    💬 Messages
+  </div>
+
+  <div class="chat-box" id="chatBox">
+    <div class="chat-header">
+      <span>Messages</span>
+      <button onclick="toggleChat()">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <!-- Messages will appear here dynamically -->
+    </div>
+    <form class="chat-input" onsubmit="sendMessage(event)">
+      <input type="text" id="chatInput" placeholder="Type a message..." />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    // fetch user data from localStorage
+    const userData = JSON.parse(localStorage.getItem('sizaUser')) || {};
+
+    // fill profile dynamically
+    document.getElementById('profileName').textContent = userData.name || "Entrepreneur";
+    document.getElementById('profileTitle').textContent = userData.location || "Location not set";
+    document.getElementById('profileIdea').textContent = userData.businessIdea || "No business idea added yet.";
+    
+    const profileImg = document.getElementById('profileImg');
+    profileImg.src = userData.profilePic || 'https://via.placeholder.com/150';
+    
+    const profileVideo = document.getElementById('profileVideo').querySelector('source');
+    profileVideo.src = userData.pitchVideo || '';
+    document.getElementById('profileVideo').load();
+
+    const profileDocs = document.getElementById('profileDocs');
+    if (userData.documents && userData.documents.length > 0) {
+      userData.documents.forEach(doc => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = doc.url;
+        a.textContent = doc.name;
+        li.appendChild(a);
+        profileDocs.appendChild(li);
+      });
+    } else {
+      profileDocs.innerHTML = "<li>No documents uploaded.</li>";
+    }
+
+    // logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('sizaUser');
+      window.location.href = "login.html";
+    });
+
+    // chat
+    function toggleChat() {
+      const chatBox = document.getElementById('chatBox');
+      chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function sendMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const messageText = input.value.trim();
+      if (messageText !== '') {
+        const chatMessages = document.getElementById('chatMessages');
+        const newMessage = document.createElement('div');
+        newMessage.classList.add('message', 'me');
+        newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
+        chatMessages.appendChild(newMessage);
+        input.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }
+  </script>
+</body>
+</html>
