@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<<<<<<< HEAD
   <title>Siza Innovator - Investor Profile</title>
   <link rel="stylesheet" href="style.css"/>
   <style>
@@ -17,14 +16,6 @@
 
 <!-- IMPORTANT: data-profile="investor" enables dynamic rendering in script.js -->
 <body data-profile="investor">
-=======
-  <title>Siza Innovator - Entrepreneur Profile</title>
-  <link rel="stylesheet" href="style.css"/>
-</head>
-
-
-<body>
->>>>>>> d5124e403d307f3a8bc773fb1dd8902b505549c0
   <header>
     <div class="container">
       <h1>Siza Innovator</h1>
@@ -35,7 +26,6 @@
           <li><a href="resources.html">Resources</a></li>
           <li><a href="events.html">Events</a></li>
           <li><a href="forum.html">Forum</a></li>
-<<<<<<< HEAD
           <li><a href="deal-room.html">Deal Room</a></li>
 
           <!-- Dynamic items: script.js shows these when logged in -->
@@ -45,17 +35,11 @@
         </ul>
       </nav>
       <div class="user-chip">Hello, <strong id="username">Guest</strong></div>
-=======
-          <li><a href="#">Logout</a></li>
-        </ul>
-      </nav>
->>>>>>> d5124e403d307f3a8bc773fb1dd8902b505549c0
     </div>
   </header>
 
   <section class="profile-section">
     <div class="container">
-<<<<<<< HEAD
 
       <!-- Loading skeleton (shown while Firestore loads) -->
       <div class="profile-skeleton">
@@ -101,97 +85,13 @@
     </div>
   </section>
 
-=======
-      <div class="profile-header">
-        <img src="https://th.bing.com/th/id/OIP.Ghae4OEdb4UmC3hkqpFvLAHaGd?rs=1&pid=ImgDetMain" alt="Profile Picture" class="profile-img">
-        <div>
-          <h2>Sindiso Moyo</h2>
-          <p>Renewable Energy Innovator | Harare, Zimbabwe</p>
-        </div>
-      </div>
-
-      <div class="profile-content">
-        <h3>My Business Idea</h3>
-        <p>A clean and affordable solar battery system for rural homes. This idea aims to bring sustainable energy access to underserved communities through an innovative, low-cost storage solution powered entirely by solar energy.</p>
-
-        <h3>Pitch Video</h3>
-        <video controls width="100%">
-          <source src="pitch.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-
-        <h3>Documents</h3>
-        <ul>
-          <li><a href="#">Business Plan.pdf</a></li>
-          <li><a href="#">Financial Forecast.xlsx</a></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-   <!-- footer -->
->>>>>>> d5124e403d307f3a8bc773fb1dd8902b505549c0
   <footer>
     <div class="container">
       <p>&copy; 2025 Siza Innovator. All rights reserved.</p>
     </div>
   </footer>
 
-<<<<<<< HEAD
   <!-- Load your dynamic logic (must be a module for Firebase imports) -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
-=======
-  <!-- chat popup html -->
-  <div class="chat-toggle" onclick="toggleChat()">
-    💬 Messages
-  </div>
-
-  <div class="chat-box" id="chatBox">
-    <div class="chat-header">
-      <span>Messages</span>
-      <button onclick="toggleChat()">×</button>
-    </div>
-    <div class="chat-messages">
-      <div class="message">
-        <strong>Investor Alex:</strong>
-        <p>Hi! Let's connect about your pitch.</p>
-      </div>
-        <div class="message me">
-        <strong>You:</strong>
-        <p>Sounds great! When are you available?</p>
-      </div>
-    </div>
-    <form class="chat-input" onsubmit="sendMessage(event)">
-      <input type="text" id="chatInput" placeholder="Type a message..." />
-      <button type="submit">Send</button>
-    </form>
-  </div>
-
-  <!-- chat script -->
-  <script>
-    function toggleChat() {
-      const chatBox = document.getElementById('chatBox');
-      chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function sendMessage(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const messageText = input.value.trim();
-      if (messageText !== '') {
-        const chatMessages = document.querySelector('.chat-messages');
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message', 'me');
-        newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
-        chatMessages.appendChild(newMessage);
-        input.value = '';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }
-  </script>
-
-</body>
-</html>
->>>>>>> d5124e403d307f3a8bc773fb1dd8902b505549c0
