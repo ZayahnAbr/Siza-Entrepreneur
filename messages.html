@@ -5,6 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Messages - Siza Innovator</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .conversation-item {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .conversation-item:hover {
+      background-color: #f8f9fa;
+    }
+    .conversation-preview {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .message-preview {
+      color: #666;
+      margin-top: 5px;
+      font-size: 0.9rem;
+    }
+    .login-prompt {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
@@ -14,7 +45,7 @@
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="messages.html">Messages</a></li>
+        <li><a href="javascript:void(0)" onclick="loadMessagesPage()">Messages</a></li>
         <li><a href="resources.html">Resources</a></li>
         <li><a href="events.html">Events</a></li>
         <li><a href="forum.html">Forum</a></li>
@@ -25,26 +56,19 @@
   </div>
 </header>
 
-
   <section class="form-section">
     <div class="container">
-      <h2>Messages</h2>
-      <div class="message-thread">
-        <div class="message">
-          <strong>Investor Alex:</strong>
-          <p>Hi Sindiso, I reviewed your pitch. Would love to set up a call.</p>
-        </div>
-        <div class="message me">
-          <strong>You:</strong>
-          <p>Thank you! I'm available this Friday afternoon.</p>
-        </div>
+      <h2>Your Messages</h2>
+      
+      <div id="conversationsList">
+        <p>Loading your conversations...</p>
       </div>
 
-      <form class="message-form">
-        <label for="new-message">New Message</label>
-        <textarea id="new-message" rows="4" placeholder="Type your message..."></textarea>
-        <button type="submit" class="btn">Send</button>
-      </form>
+      <div id="loginPrompt" class="login-prompt" style="display: none;">
+        <h3>Please Log In</h3>
+        <p>You need to be logged in to view messages.</p>
+        <a href="login.html" class="btn">Go to Login</a>
+      </div>
     </div>
   </section>
 
@@ -54,54 +78,85 @@
     </div>
   </footer>
 
-    <!-- chat popup html -->
-  <div class="chat-toggle" onclick="toggleChat()">
-    💬 Messages
-  </div>
-
-  <div class="chat-box" id="chatBox">
-    <div class="chat-header">
-      <span>Messages</span>
-      <button onclick="toggleChat()">×</button>
-    </div>
-    <div class="chat-messages">
-      <div class="message">
-        <strong>Investor Alex:</strong>
-        <p>Hi! Let's connect about your pitch.</p>
-      </div>
-        <div class="message me">
-        <strong>You:</strong>
-        <p>Sounds great! When are you available?</p>
-      </div>
-    </div>
-    <form class="chat-input" onsubmit="sendMessage(event)">
-      <input type="text" id="chatInput" placeholder="Type a message..." />
-      <button type="submit">Send</button>
-    </form>
-  </div>
-
-  <!-- chat script -->
-  <script>
-    function toggleChat() {
-      const chatBox = document.getElementById('chatBox');
-      chatBox.style.display = chatBox.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function sendMessage(e) {
-      e.preventDefault();
-      const input = document.getElementById('chatInput');
-      const messageText = input.value.trim();
-      if (messageText !== '') {
-        const chatMessages = document.querySelector('.chat-messages');
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message', 'me');
-        newMessage.innerHTML = `<strong>You:</strong><p>${messageText}</p>`;
-        chatMessages.appendChild(newMessage);
-        input.value = '';
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }
-  </script>
 <script type="module" src="script.js"></script>
+<script>
+// Navigation function
+function loadMessagesPage() {
+  // Check if we have a user logged in
+  const userData = localStorage.getItem("sizaUser");
+  if (userData) {
+    // Save user data for the messages page
+    localStorage.setItem("tempUserData", userData);
+  }
+  window.location.href = "messages.html";
+}
+
+// Check for temporary user data when messages page loads
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("Messages page loaded");
+  
+  // Check if we have temporary user data from navigation
+  const tempUserData = localStorage.getItem("tempUserData");
+  if (tempUserData) {
+    try {
+      console.log("Restoring user from temp storage");
+      const user = JSON.parse(tempUserData);
+      
+      // Store it as the main user data
+      localStorage.setItem("sizaUser", tempUserData);
+      localStorage.removeItem("tempUserData");
+      
+      // Hide login prompt
+      document.getElementById("loginPrompt").style.display = "none";
+      
+      // Wait for the module to load, then load conversations
+      const checkModule = setInterval(function() {
+        if (typeof loadUserConversations === 'function') {
+          clearInterval(checkModule);
+          console.log("Loading conversations...");
+          loadUserConversations();
+        }
+      }, 100);
+      
+    } catch (error) {
+      console.error("Error restoring user:", error);
+      showLoginPrompt();
+    }
+  } else {
+    // Check regular user data
+    const userData = localStorage.getItem("sizaUser");
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        console.log("User is logged in:", user.email);
+        document.getElementById("loginPrompt").style.display = "none";
+        
+        // Wait for module to load
+        const checkModule = setInterval(function() {
+          if (typeof loadUserConversations === 'function') {
+            clearInterval(checkModule);
+            loadUserConversations();
+          }
+        }, 100);
+        
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+        showLoginPrompt();
+      }
+    } else {
+      console.log("No user data found");
+      showLoginPrompt();
+    }
+  }
+  
+  function showLoginPrompt() {
+    document.getElementById("loginPrompt").style.display = "block";
+    const conversationsList = document.getElementById("conversationsList");
+    if (conversationsList) {
+      conversationsList.innerHTML = "";
+    }
+  }
+});
+</script>
 </body>
 </html>

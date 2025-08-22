@@ -11,6 +11,11 @@ import {
   getDocs,
   query,
   orderBy,
+  onSnapshot,
+  where,
+  updateDoc,
+  arrayUnion,
+  writeBatch,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
 import {
@@ -306,6 +311,329 @@ async function acceptNDA(pitchId) {
 }
 
 /* -------------------------
+   Messaging System
+-------------------------- */
+// Handle contact button click
+async function handleContactEntrepreneur() {
+  console.log("Contact button clicked!");
+  
+  const user = getStoredUser();
+  if (!user || user.accountType !== "investor") {
+    alert("You need to be logged in as an investor to contact entrepreneurs.");
+    return;
+  }
+  
+  const pitchId = new URLSearchParams(location.search).get("id");
+  if (!pitchId) {
+    alert("Pitch information not found.");
+    return;
+  }
+  
+  try {
+    const pitchDoc = await getDoc(doc(db, "testPitches", pitchId));
+    if (!pitchDoc.exists()) {
+      alert("Pitch not found.");
+      return;
+    }
+    
+    const pitchData = pitchDoc.data();
+    const entrepreneurId = pitchData.entrepreneurID;
+    
+    if (!entrepreneurId) {
+      alert("Entrepreneur information not available.");
+      return;
+    }
+    
+    const conversationId = await getOrCreateConversation(
+      user.id, 
+      entrepreneurId, 
+      pitchId
+    );
+    
+    window.location.href = `chat.html?conversation=${conversationId}`;
+  } catch (error) {
+    console.error("Error initiating conversation:", error);
+    alert("Failed to start conversation. Please try again.");
+  }
+}
+/**
+ * Create or get a conversation between two users
+ */
+async function getOrCreateConversation(investorId, entrepreneurId, pitchId) {
+  try {
+    // Check if conversation already exists
+    const q = query(
+      collection(db, "conversations"),
+      where("participants", "array-contains", investorId),
+      where("pitchId", "==", pitchId)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      // Return existing conversation
+      return querySnapshot.docs[0].id;
+    }
+    
+    // Create new conversation
+    const conversationData = {
+      participants: [investorId, entrepreneurId],
+      pitchId: pitchId,
+      createdAt: serverTimestamp(),
+      lastMessageAt: serverTimestamp(),
+      lastMessage: "Conversation started"
+    };
+    
+    const docRef = await addDoc(collection(db, "conversations"), conversationData);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error creating/getting conversation:", error);
+    throw error;
+  }
+}
+
+/**
+ * Send a message to a conversation
+ */
+async function sendMessage(conversationId, senderId, messageText) {
+  try {
+    if (!messageText.trim()) return;
+    
+    // Add message to messages subcollection
+    const messageData = {
+      senderId: senderId,
+      text: messageText.trim(),
+      timestamp: serverTimestamp(),
+      read: false
+    };
+    
+    await addDoc(
+      collection(db, "conversations", conversationId, "messages"),
+      messageData
+    );
+    
+    // Update conversation last message and timestamp
+    await updateDoc(doc(db, "conversations", conversationId), {
+      lastMessage: messageText.trim(),
+      lastMessageAt: serverTimestamp()
+    });
+  } catch (error) {
+    console.error("Error sending message:", error);
+    throw error;
+  }
+}
+
+/**
+ * Set up real-time listener for messages in a conversation
+ */
+function listenToMessages(conversationId, callback) {
+  const q = query(
+    collection(db, "conversations", conversationId, "messages"),
+    orderBy("timestamp", "asc")
+  );
+  
+  return onSnapshot(q, (snapshot) => {
+    const messages = [];
+    snapshot.forEach((doc) => {
+      messages.push({ id: doc.id, ...doc.data() });
+    });
+    callback(messages);
+  });
+}
+
+/**
+ * Get conversation details
+ */
+async function getConversation(conversationId) {
+  try {
+    const docSnap = await getDoc(doc(db, "conversations", conversationId));
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() };
+    } else {
+      throw new Error("Conversation not found");
+    }
+  } catch (error) {
+    console.error("Error getting conversation:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get user's conversations
+ */
+async function getUserConversations(userId) {
+  try {
+    const q = query(
+      collection(db, "conversations"),
+      where("participants", "array-contains", userId),
+      orderBy("lastMessageAt", "desc")
+    );
+    
+    const querySnapshot = await getDocs(q);
+    const conversations = [];
+    
+    querySnapshot.forEach((doc) => {
+      conversations.push({ id: doc.id, ...doc.data() });
+    });
+    
+    return conversations;
+  } catch (error) {
+    console.error("Error getting user conversations:", error);
+    throw error;
+  }
+}
+
+/**
+ * Mark messages as read
+ */
+async function markMessagesAsRead(conversationId, userId) {
+  try {
+    // Get all unread messages from this conversation that aren't sent by the user
+    const q = query(
+      collection(db, "conversations", conversationId, "messages"),
+      where("senderId", "!=", userId),
+      where("read", "==", false)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    const batch = writeBatch(db);
+    
+    querySnapshot.forEach((doc) => {
+      const messageRef = doc.ref;
+      batch.update(messageRef, { read: true });
+    });
+    
+    await batch.commit();
+  } catch (error) {
+    console.error("Error marking messages as read:", error);
+  }
+}
+
+/* -------------------------
+   Messages Page Functions
+-------------------------- */
+
+// Load user's conversations for messages page
+async function loadUserConversations() {
+  const conversationsContainer = document.getElementById("conversationsList");
+  if (!conversationsContainer) {
+    console.log("Not on messages page, skipping conversations load");
+    return;
+  }
+  
+  const user = getStoredUser();
+  if (!user) {
+    conversationsContainer.innerHTML = "";
+    document.getElementById("loginPrompt").style.display = "block";
+    return;
+  }
+  
+  try {
+    showGlobalLoader(true);
+    console.log("Loading conversations for user:", user.id);
+    const conversations = await getUserConversations(user.id);
+    console.log("Found conversations:", conversations);
+    
+    if (conversations.length === 0) {
+      conversationsContainer.innerHTML = "<p>No messages yet. When investors contact you about your pitches, conversations will appear here.</p>";
+      return;
+    }
+    
+    conversationsContainer.innerHTML = "";
+    
+    for (const convo of conversations) {
+      try {
+        // Get the other participant's info
+        const otherParticipantId = convo.participants.find(id => id !== user.id);
+        const otherUser = await fetchUserData(otherParticipantId);
+        const otherUserName = otherUser?.name || "Unknown User";
+        
+        const convoElement = document.createElement("div");
+        convoElement.className = "conversation-item";
+        convoElement.innerHTML = `
+          <div class="conversation-preview">
+            <div>
+              <strong>${otherUserName}</strong>
+              <p class="message-preview">${convo.lastMessage || "No messages yet"}</p>
+            </div>
+            <button class="btn open-chat-btn" data-conversation-id="${convo.id}">Open Chat</button>
+          </div>
+        `;
+        conversationsContainer.appendChild(convoElement);
+      } catch (userError) {
+        console.error("Error loading user data for conversation:", userError);
+        // Still show the conversation even if user data fails
+        const convoElement = document.createElement("div");
+        convoElement.className = "conversation-item";
+        convoElement.innerHTML = `
+          <div class="conversation-preview">
+            <div>
+              <strong>Unknown User</strong>
+              <p class="message-preview">${convo.lastMessage || "No messages yet"}</p>
+            </div>
+            <button class="btn" onclick="openChat('${convo.id}')">Open Chat</button>
+          </div>
+        `;
+        conversationsContainer.appendChild(convoElement);
+      }
+    }
+    // ... after all conversation items are created ...
+
+    // ADD EVENT LISTENERS TO ALL OPEN CHAT BUTTONS
+    setTimeout(() => {
+      const openChatButtons = document.querySelectorAll('.open-chat-btn');
+      console.log("Found", openChatButtons.length, "chat buttons to add listeners to");
+      
+      openChatButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const conversationId = this.getAttribute('data-conversation-id');
+          console.log("Opening chat:", conversationId);
+          window.location.href = `chat.html?conversation=${conversationId}`;
+        });
+      });
+    }, 100);
+    } catch (error) {
+      console.error("Error loading conversations:", error);
+      conversationsContainer.innerHTML = `
+        <p>Error loading messages. Please try again.</p>
+        <p>Error details: ${error.message}</p>
+        <button class="btn" onclick="loadUserConversations()">Retry</button>
+      `;
+    } finally {
+      showGlobalLoader(false);
+    }
+}
+
+// Function to open chat
+function openChat(conversationId) {
+  window.location.href = `chat.html?conversation=${conversationId}`;
+}
+
+// Update message badge in navbar
+async function updateMessageBadge() {
+  const user = getStoredUser();
+  if (!user) return;
+  
+  try {
+    const conversations = await getUserConversations(user.id);
+    let unreadCount = 0;
+    
+    // Simple unread count - you can enhance this later
+    conversations.forEach(convo => {
+      if (convo.lastMessage) unreadCount++; // Basic implementation
+    });
+    
+    const badge = document.getElementById("messageBadge");
+    if (badge) {
+      badge.textContent = unreadCount > 0 ? unreadCount : "";
+      badge.style.display = unreadCount > 0 ? "inline-block" : "none";
+    }
+  } catch (error) {
+    console.error("Error updating message badge:", error);
+  }
+}
+
+/* -------------------------
    Route guard
 -------------------------- */
 function requireAuth(roles = []) {
@@ -570,11 +898,77 @@ async function renderPitchDetailsIfNeeded() {
     } else if (vwrap) {
       vwrap.style.display = "none";
     }
+
+
+const contactBtnContainer = document.getElementById("contactBtnContainer");
+if (contactBtnContainer) {
+  const user = getStoredUser();
+  if (user && user.accountType === "investor") {
+    contactBtnContainer.innerHTML = `
+      <button id="contactEntrepreneur" class="btn">Contact Entrepreneur</button>
+    `;
+    
+    // Add event listener after creating the button
+    setTimeout(() => {
+      const contactBtn = document.getElementById("contactEntrepreneur");
+      if (contactBtn) {
+        contactBtn.addEventListener("click", async function() {
+          console.log("Contact button clicked via event listener!");
+          
+          const user = getStoredUser();
+          if (!user || user.accountType !== "investor") {
+            alert("You need to be logged in as an investor to contact entrepreneurs.");
+            return;
+          }
+          
+          const pitchId = new URLSearchParams(location.search).get("id");
+          if (!pitchId) {
+            alert("Pitch information not found.");
+            return;
+          }
+          
+          try {
+            console.log("Fetching pitch:", pitchId);
+            const pitchDoc = await getDoc(doc(db, "testPitches", pitchId));
+            if (!pitchDoc.exists()) {
+              alert("Pitch not found.");
+              return;
+            }
+            
+            const pitchData = pitchDoc.data();
+            console.log("Pitch data:", pitchData);
+            const entrepreneurId = pitchData.entrepreneurID;
+            
+            if (!entrepreneurId) {
+              alert("Entrepreneur information not available.");
+              return;
+            }
+            
+            console.log("Creating conversation with entrepreneur:", entrepreneurId);
+            const conversationId = await getOrCreateConversation(
+              user.id, 
+              entrepreneurId, 
+              pitchId
+            );
+            
+            console.log("Redirecting to chat with conversation:", conversationId);
+            window.location.href = `chat.html?conversation=${conversationId}`;
+          } catch (error) {
+            console.error("Error initiating conversation:", error);
+            alert("Failed to start conversation. Please try again. Error: " + error.message);
+          }
+        });
+      }
+    }, 100);
+  }
+}
+
   } catch (e) {
     console.error(e);
     alert("Could not load pitch details.");
   }
 }
+
 
 
 /* -------------------------
@@ -644,22 +1038,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Auth state sync
   onAuthStateChanged(auth, async (fbUser) => {
-    if (!fbUser) {
-      if (usernameSpan) usernameSpan.textContent = "Guest";
-      setAuthUI(null);
-      return;
+  if (!fbUser) {
+    // Check if we have temporary user data from navigation
+    const tempUserData = localStorage.getItem("tempUserData");
+    if (tempUserData) {
+      try {
+        console.log("Restoring user from temp navigation data");
+        const user = JSON.parse(tempUserData);
+        storeUserLocally(user);
+        if (usernameSpan) usernameSpan.textContent = user.name;
+        setAuthUI(user);
+        localStorage.removeItem("tempUserData");
+        return;
+      } catch (error) {
+        console.error("Error restoring temp user:", error);
+      }
     }
-    const userData = await fetchUserData(fbUser.uid);
-    const merged = {
-      id: fbUser.uid,
-      name: userData?.name || fbUser.displayName || "User",
-      email: fbUser.email,
-      ...userData,
-    };
-    storeUserLocally(merged);
-    if (usernameSpan) usernameSpan.textContent = merged.name;
-    setAuthUI(merged); // may redirect from index → dashboard
-  });
+    
+    // No user found
+    localStorage.removeItem("sizaUser");
+    if (usernameSpan) usernameSpan.textContent = "Guest";
+    setAuthUI(null);
+    return;
+  }
+  
+  // User is authenticated with Firebase
+  const userData = await fetchUserData(fbUser.uid);
+  const merged = {
+    id: fbUser.uid,
+    name: userData?.name || fbUser.displayName || "User",
+    email: fbUser.email,
+    ...userData,
+  };
+  storeUserLocally(merged);
+  if (usernameSpan) usernameSpan.textContent = merged.name;
+  setAuthUI(merged); // may redirect from index → dashboard
+});
 
   // Logout
   qs("nav-logout")?.addEventListener("click", async (e) => {
@@ -906,6 +1320,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loadPitchesIntoGrid();
   renderPitchDetailsIfNeeded();
   wirePitchForm();
+  wireChatUI();
+  if (location.pathname.endsWith("messages.html")) {
+    loadUserConversations();
+  }
+  updateMessageBadge();
 
 });
 
@@ -1148,5 +1567,130 @@ function wireDealRoomUIIfNeeded() {
   // auth gate (optional but recommended)
   requireAuth(); // or requireAuth(['investor','entrepreneur'])
 }
+// Wire up contact button and chat functionality
+function wireChatUI() { 
+  // CHAT PAGE FUNCTIONALITY
+  if (location.pathname.endsWith("chat.html")) {
+    const conversationId = new URLSearchParams(location.search).get("conversation");
+    if (!conversationId) {
+      alert("No conversation specified.");
+      window.location.href = "investor-dashboard.html";
+      return;
+    }
+    
+    const user = getStoredUser();
+    if (!user) {
+      alert("You need to be logged in to access messages.");
+      window.location.href = "index.html";
+      return;
+    }
+    
+    let unsubscribeMessages = null;
+    
+    // Load conversation and messages
+    async function loadChat() {
+      try {
+        // Get conversation details
+        const conversation = await getConversation(conversationId);
+        
+        // Find the other participant
+        const otherParticipantId = conversation.participants.find(
+          id => id !== user.id
+        );
+        
+        if (!otherParticipantId) {
+          alert("Conversation error: participant not found.");
+          window.location.href = "investor-dashboard.html";
+          return;
+        }
+        
+        // Get other participant's details
+        const otherUser = await fetchUserData(otherParticipantId);
+        document.getElementById("chatWithName").textContent = `Chat with ${otherUser?.name || "Unknown User"}`;
+        
+        // Set up real-time message listener
+        unsubscribeMessages = listenToMessages(conversationId, (messages) => {
+          const messagesContainer = document.getElementById("chatMessages");
+          messagesContainer.innerHTML = "";
+          
+          messages.forEach(message => {
+            const messageEl = document.createElement("div");
+            messageEl.classList.add("message");
+            messageEl.classList.add(
+              message.senderId === user.id ? "sent" : "received"
+            );
+            
+            const time = message.timestamp?.toDate 
+              ? message.timestamp.toDate().toLocaleTimeString() 
+              : new Date().toLocaleTimeString();
+            
+            messageEl.innerHTML = `
+              <div>${message.text}</div>
+              <div class="message-time">${time}</div>
+            `;
+            
+            messagesContainer.appendChild(messageEl);
+          });
+          
+          // Scroll to bottom
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          
+          // Mark messages as read
+          if (messages.some(m => m.senderId !== user.id && !m.read)) {
+            markMessagesAsRead(conversationId, user.id);
+          }
+        });
+        
+        // Set up message sending
+        const messageInput = document.getElementById("messageInput");
+        const sendButton = document.getElementById("sendMessageBtn");
+        
+        sendButton.addEventListener("click", async () => {
+          const message = messageInput.value.trim();
+          if (!message) return;
+          
+          sendButton.disabled = true;
+          try {
+            await sendMessage(conversationId, user.id, message);
+            messageInput.value = "";
+          } catch (error) {
+            console.error("Error sending message:", error);
+            alert("Failed to send message. Please try again.");
+          } finally {
+            sendButton.disabled = false;
+          }
+        });
+        
+        // Send message on Enter key
+        messageInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            sendButton.click();
+          }
+        });
+        
+        // Back button
+        document.getElementById("backToPitch").addEventListener("click", () => {
+          if (unsubscribeMessages) unsubscribeMessages();
+          window.history.back();
+        });
+      } catch (error) {
+        console.error("Error loading chat:", error);
+        alert("Failed to load conversation.");
+        window.location.href = "investor-dashboard.html";
+      }
+    }
+    
+    loadChat();
+  }
+}
+
+// Add this to your DOMContentLoaded event listener
+//document.addEventListener("DOMContentLoaded", function() {
+  // ... your existing DOMContentLoaded code ...
+  
+  // Add this line at the end of the function
+ // wireChatUI();
+//});
+
 // call after your existing DOMContentLoaded wiring
 document.addEventListener("DOMContentLoaded", wireDealRoomUIIfNeeded);
